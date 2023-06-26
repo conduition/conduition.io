@@ -28,6 +28,8 @@ Just so we're all on the same page:
 |$x \leftarrow \mathbb{Z}\_{n}$ | Sampling $x$ randomly from the set of positive integers modulo $n$. |
 | $a\ \|\|\ b$ | Concatenation of the byte arrays $a$ and $b$. |
 
+In general, upper-case variables like $X$ refer to points on the elliptic curve, while lower case letters like $x$ refer to ordinary natural numbers, called _scalars._
+
 ## Enter the Frankenstein
 
 To understand how delicious Schnorr Signatures are for Bitcoin developers, we need to compare it to what we have now: ECDSA. I'll forgive you if you choose to skip this part.
@@ -368,7 +370,7 @@ Carol has just fooled Alice and Bob into agreeing to use an apparently aggregate
 
 Neither Alice nor Bob would be able to distinguish between Carol's authentic key $D_c$ and the phoney key $D_c'$ because they don't know $D_c$ belongs to Carol! That's why they were sharing the keys in the first place.
 
-This can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such a process is called _Knowledge of Secret Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. For example, perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Or perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
+This can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such a process is called _Knowledge-of-Secret-Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. For example, perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Or perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
 
 Instead modern Bitcoin developers use a kind of commitment protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. I'm looking forward to discussing MuSig in another post. <sub><i>\*rubs hands in excitement</i></sub>
 
