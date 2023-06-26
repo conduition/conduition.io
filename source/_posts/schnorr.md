@@ -18,7 +18,7 @@ Many culture articles in the Bitcoin space will extol the sound byte:
 Just so we're all on the same page:
 
 | Notation | Meaning |
-|----------|---------|
+|:--------:|---------|
 | $G$ | The [base-point of the secp256k1 curve.](https://bitcoin.stackexchange.com/questions/58784/how-were-the-secp256k1-base-point-coordinates-decided) |
 | $m$ | The message we're trying to sign (a byte array). |
 |$H(x)$ | The SHA-256 hash function. |
