@@ -8,7 +8,7 @@ deploy: clean build
 
 .PHONY: server
 server:
-	hexo server
+	hexo server --draft
 
 .PHONY: clean
 clean:
