@@ -5,10 +5,18 @@
 # Site
 title: Conduition
 subtitle: ''
-description: >
+description: >-
   The personal blog of a pseudonymous cypherpunk. I'm presently focused on learning
   about scriptless Bitcoin contracts, multi-party computation, zero-knowledge proofs,
   and ravenously consuming other tasty morsels of knowledge.
+
+
+  Notice any errors in my work? Please let me know! 🧹 Contact me by email at
+  <a href="mailto:conduition@proton.me">conduition@proton.me</a> or
+  [suggest an edit on Github](https://github.com/conduition/conduition.io).
+
+
+  [Download my PGP key here. <img src="/images/gnupg-logo.png" style="height: 14px;">](/meta/conduition.key.asc)
 keywords: bitcoin scriptless smart contracts blockchain crypto cryptography lightning network
 author: Conduition
 language: en
