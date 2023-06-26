@@ -377,7 +377,7 @@ $$
 D_c' &= D_c - D_a               \\\\
 D    &= D_a + D_b + D_c'        \\\\
      &= D_a + D_b + (D_c - D_a) \\\\
-     &= D_c + D_b               \\\\
+     &= D_b + D_c               \\\\
 \end{align}
 $$
 
