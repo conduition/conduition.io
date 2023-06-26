@@ -128,7 +128,7 @@ manifest:
   url: /meta/manifest.json
 
 styles:
-  - /css/global
+  - url: /css/global
 
 # The color scheme that should be used to highlight codeblocks.
 # See source/css/_highlight for a list of all available color schemes.
