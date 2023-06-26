@@ -100,7 +100,7 @@ logo:
   enabled: true
   width: 96
   height: 96
-  url: /images/lightning-bolt-96.png
+  url: /images/lightning-bolt-192.png
   gravatar: false
   grayout: true
 
@@ -118,7 +118,7 @@ favicon:
     url: /images/lightning-bolt-96.png
     gravatar: false
   android:
-    url: /images/lightning-bolt-96.png
+    url: /images/lightning-bolt-192.png
     gravatar: false
   apple:
     url: /images/apple-touch.png
