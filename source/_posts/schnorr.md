@@ -370,7 +370,20 @@ Carol has just fooled Alice and Bob into agreeing to use an apparently aggregate
 
 Neither Alice nor Bob would be able to distinguish between Carol's authentic key $D_c$ and the phoney key $D_c'$ because they don't know $D_c$ belongs to Carol! That's why they were sharing the keys in the first place.
 
-This can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such a process is called _Knowledge-of-Secret-Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. For example, perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Or perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
+Carol could also collude with Bob to exclude Alice's key from the final aggregated key, like so.
+
+$$
+\begin{align}
+D_c' &= D_c - D_a               \\\\
+D    &= D_a + D_b + D_c'        \\\\
+     &= D_a + D_b + (D_c - D_a) \\\\
+     &= D_c + D_b               \\\\
+\end{align}
+$$
+
+### The Solution
+
+Rogue Key Attacks can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such an affirmation is called _Knowledge-of-Secret-Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. Perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
 
 Instead modern Bitcoin developers use a kind of commitment protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. I'm looking forward to discussing MuSig in another post. <sub><i>\*rubs hands in excitement</i></sub>
 
