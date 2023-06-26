@@ -290,9 +290,9 @@ $$
 
 | Name | Signature |
 |:----:|:---------:|
-| Alice | $s_a = r_a + e_ad_a$ |
-| Bob   | $s_b = r_b + e_bd_b$ |
-| Carol | $s_c = r_c + e_cd_c$ |
+| Alice | $s_a = r_a + e d_a$ |
+| Bob   | $s_b = r_b + e d_b$ |
+| Carol | $s_c = r_c + e d_c$ |
 
 6. They send each other their $s$ values and aggregate by summing them all up.
 
