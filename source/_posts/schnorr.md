@@ -2,6 +2,8 @@
 title: Bitcoin Schnorr Signatures - How Does It Work?
 date: 2023-06-23
 mathjax: true
+categories:
+  - cryptography
 ---
 
 # Introduction
@@ -10,7 +12,7 @@ Many culture articles in the Bitcoin space will extol the sound byte:
 
 > Schnorr signatures will improve Bitcoin's privacy for multisignature transactions!
 
-...and yet most choose to omit the clever math which makes this statement true. The math isn't mind-bogglingly complex. One needs only a basic grasp of [elliptic curve cryptography](/2023/06/22/ecc-resources/), and the benefits of Schnorr Signatures quickly become very exciting.
+...and yet most choose to omit the clever math which makes this statement true. The math isn't mind-bogglingly complex. One needs only a basic grasp of [elliptic curve cryptography](/cryptography/ecc-resources/), and the benefits of Schnorr Signatures quickly become very exciting.
 
 
 ## Preliminaries

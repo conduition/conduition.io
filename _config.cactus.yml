@@ -16,6 +16,7 @@ direction: ltr
 nav:
   home: /
   articles: /archives/
+  Categories: /categories/
   projects: http://github.com/conduition
 
 
