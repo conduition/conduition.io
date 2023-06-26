@@ -247,7 +247,7 @@ Let's say you have three parties with their own private and public key pairs. Th
 | Name | Public Key | Private Key | Nonce |
 |:----:|:----------:|:-----------:|:-----:|
 | Alice | $D_a$ | $d_a$ | $r_a$ |
-| Bob | $D_b$ | $d_b$ | $r_b$ |
+| Bob   | $D_b$ | $d_b$ | $r_b$ |
 | Carol | $D_c$ | $d_c$ | $r_c$ |
 
 They all want to sign the same message $m$, and naturally have agreed on the base point $G$ and hash function $H(x)$.
@@ -257,7 +257,7 @@ They all want to sign the same message $m$, and naturally have agreed on the bas
 | Name | Public Nonce |
 |:----:|:------------:|
 | Alice | $R_a = r_aG$ |
-| Bob | $R_b = r_bG$ |
+| Bob   | $R_b = r_bG$ |
 | Carol | $R_c = r_cG$ |
 
 2. They agree on an aggregated nonce point $R$.
@@ -291,7 +291,7 @@ $$
 | Name | Signature |
 |:----:|:---------:|
 | Alice | $s_a = r_a + e_ad_a$ |
-| Bob | $s_b = r_b + e_bd_b$ |
+| Bob   | $s_b = r_b + e_bd_b$ |
 | Carol | $s_c = r_c + e_cd_c$ |
 
 6. They send each other their $s$ values and aggregate by summing them all up.
