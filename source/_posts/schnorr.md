@@ -1,5 +1,5 @@
 ---
-title: Bitcoin Schnorr Signatures - How Does It Work?
+title: A Dive Into the Math Behind Bitcoin Schnorr Signatures
 date: 2023-06-23
 mathjax: true
 categories:
