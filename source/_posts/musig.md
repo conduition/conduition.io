@@ -34,7 +34,7 @@ Just so we're all on the same page:
 | $m$ | The message we're trying to sign (a byte array). |
 |$H(x)$ | The SHA-256 hash function. |
 |$n$ | The [_order_ of the secp256k1 curve](https://crypto.stackexchange.com/questions/53597/how-did-someone-discover-n-order-of-g-for-secp256k1). There are $n - 1$ possible valid non-zero points on the curve, plus the 'infinity' point (AKA zero). |
-|$x \leftarrow \mathbb{Z}\_{n}$ | Sampling $x$ randomly from the set of positive integers modulo $n$. |
+|$x \leftarrow \mathbb{Z}\_{n}$ | Sampling $x$ randomly from the set of integers modulo $n$. Note that we exclude zero when sampling. |
 | $a\ \|\|\ b$ | Concatenation of the byte arrays $a$ and $b$. |
 
 MuSig relies on _namespaced hash functions,_ which are denoted $H_{\text{foo}}(x)$ where $\text{foo}$ is the namespace of the hash. A namespaced hash function is a normal cryptographic hash function, but with some constant bits added to every hashed message which ensure that the output of the namespaced hash function can't be reused for other namespaces. One could define a namespaced hash function like so.

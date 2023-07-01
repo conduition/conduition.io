@@ -25,7 +25,7 @@ Just so we're all on the same page:
 | $m$ | The message we're trying to sign (a byte array). |
 |$H(x)$ | The SHA-256 hash function. |
 |$n$ | The [_order_ of the secp256k1 curve](https://crypto.stackexchange.com/questions/53597/how-did-someone-discover-n-order-of-g-for-secp256k1). There are $n - 1$ possible valid non-zero points on the curve, plus the 'infinity' point (AKA zero). |
-|$x \leftarrow \mathbb{Z}\_{n}$ | Sampling $x$ randomly from the set of positive integers modulo $n$. |
+|$x \leftarrow \mathbb{Z}\_{n}$ | Sampling $x$ randomly from the set of integers modulo $n$. Note that we exclude zero when sampling. |
 | $a\ \|\|\ b$ | Concatenation of the byte arrays $a$ and $b$. |
 
 In general, upper-case variables like $X$ refer to points on the elliptic curve, while lower case letters like $x$ refer to ordinary natural numbers, called _scalars._
@@ -182,13 +182,13 @@ $$
 R = rG
 $$
 
-3. Hash the the nonce point $R$, the signing public key $D$, and the message $m$.
+3. Hash the the nonce point $R$, the signing public key $D$, and the message $m$ to get the challenge $e$.
 
 $$
 e = H(R\ \|\|\ D\ \|\|\ m)
 $$
 
-\* <sub>If you read about Schnorr Signatures elsewhere online, you might see this computed as $e = H(R\ \|\|\ m)$. The variant used in Bitcoin is called _Key-Prefixed Schnorr,_ where the signing key is committed to by the hash.</sub>
+\* <sub>If you read about Schnorr Signatures elsewhere online, you might see the challenge computed as $e = H(R\ \|\|\ m)$. The variant used in Bitcoin is called _Key-Prefixed Schnorr,_ where the challenge also commits to the signing key.</sub>
 
 4. Compute the signature using the private key $d$.
 
@@ -218,13 +218,105 @@ $$
 
 Thanks to the properties of cryptographically secure elliptic curves like secp256k1, factoring a curve point to find its discrete logarithm isn't computationally feasible (yet). This is why signatures cannot be forged without knowing the private key $d$, but they can be easily verified using $G$.
 
+> but why do these particular equations work?
+
+Far be it from me to reverse-justify Schnorr's design, but perhaps I can at least point out what each step and each variable is doing from the perspective of someone attempting to attack the scheme.
+
+Recall the definition of a Schnorr Signature.
+
+$$
+\begin{aligned}
+& d \leftarrow \mathbb{Z}\_n \quad &&
+  r \leftarrow \mathbb{Z}\_n \\\\
+& D = d G \quad &&
+  R = rG                    \\\\
+\end{aligned}
+$$
+$$
+\begin{align}
+e &= H(R\ \|\|\ D\ \|\|\ m) \\\\
+s &= r + ed                 \\\\
+\end{align}
+$$
+
+Note that:
+
+- $r$ and $d$ are both randomly sampled from the set of modulo $n$, AKA $\mathbb{Z}\_n$.
+- The nonce $r$ changes for every signature whereas the private key $d$ remains consistent.
+- $e$ can be computed by anyone who knows the (presumably) public parameters $(R, D, m)$.
+
+When the signer multiplies their private key $d$ with the challenge $e$, this results in another scalar value somewhere in $\mathbb{Z}\_n$ which they could only have computed if they knew $d$. For instance, someone with only $D$ and $e$ would have no idea how to compute $e \cdot d$.
+
+So what's the point of adding $r$? Why not make the signature $s = ed$? Because $e$ is public, so any observer could compute the private key by inverting $e$.
+
+$$
+d = s \cdot e^{-1}
+$$
+
+This is why $r$ must be secret and uniformly random: These properties prevent an observer from being able to compute the signer's private key from the signature.
+
+If an observer knew the $r$ value used on a signature $s$, they could compute the signer's private key.
+
+$$
+\begin{align}
+ s &= r + ed        \\\\
+ed &= s - r         \\\\
+ d &= e^{-1}(s - r) \\\\
+\end{align}
+$$
+
+Another common gotcha: $r$ must be different for every signature. If the same nonce $r$ is used in two different signatures $(s_1, s_2)$ made by the same private key on distinct messages $(m_1, m_2)$, then an observer can easily compute the private key used to sign both messages by solving a system of equations.
+
+$$
+\begin{aligned}
+& e_1 = H(R\ \|\|\ D\ \|\|\ m_1) &&
+  e_2 = H(R\ \|\|\ D\ \|\|\ m_2) \\\\
+& s_1 = r + e_1 d &&
+  s_2 = r + e_2 d \\\\
+& r = s_1 - e_1 d &&
+  r = s_2 - e_2 d \\\\
+\end{aligned}
+$$
+
+$$
+\begin{align}
+  s_1 - e_1 d &= s_2 - e_2 d      \\\\
+e_1 d - e_2 d &= s_1 - s_2        \\\\
+ d(e_1 - e_2) &= s_1 - s_2        \\\\
+ d &= \frac{s_1 - s_2}{e_1 - e_2} \\\\
+\end{align}
+$$
+
+Interestingly, that definition of $d$ indicates something quite unexpected. $d$ is the _slope_ of the line connecting the points $(e_1, s_1)$ and $(e_2, s_2)$ on the Cartesian plane, but only if $r$ is reused between both signatures.
+
+Contrastingly, if we used two different nonces $(r_1, r_2)$ when creating the two signatures, an observer cannot solve for $d$ without knowing either $r_1$ or $r_2$, because there is no usable system of equations.
+
+$$
+\begin{aligned}
+& s_1 = r_1 + e_1 d &&
+  s_2 = r_2 + e_2 d \\\\
+& e_1 d = s_1 - r_1 &&
+  e_2 d = s_1 - r_2 \\\\
+& d = \frac{s_1 - r_1}{e_1} &&
+  d = \frac{s_1 - r_2}{e_2} \\\\
+\end{aligned}
+$$
+
+What if we used different nonces to sign the same message? Would this result in any Bad News™? No, because remember that the challenge $e$ also commits to the nonce.
+
+$$
+e = H(R\ \|\|\ D\ \|\|\ m)
+$$
+
+If the nonce changes, so does $e$. Even if $e$ only committed to $D$ and $m$, an attacker would still need to know $r_1$ or $r_2$ to compute $d$.
+
 > but why is this so cool?
 
 1. Schnorr is faster.
 2. Schnorr is simpler to implement than ECDSA.
 3. Schnorr signatures aren't malleable.
 4. Schnorr [has very solid security proofs](https://eprint.iacr.org/2012/029).
-5. <u>**Schnorr permits linear signature aggregation.**</u>
+5. <u>***Schnorr permits linear signature aggregation.***</u>
 
 I bolded \#5 there because that one feature is _incredibly important_ for the future potential of Bitcoin.
 
@@ -254,11 +346,17 @@ They all want to sign the same message $m$, and naturally have agreed on the bas
 
 1. They each compute their own public nonce points independently.
 
-| Name | Public Nonce |
-|:----:|:------------:|
-| Alice | $R_a = r_aG$ |
-| Bob   | $R_b = r_bG$ |
-| Carol | $R_c = r_cG$ |
+
+$$
+\begin{aligned}
+& \text{Alice} &&
+  \text{Bob}   &&
+  \text{Carol} \\\\
+& R_a = r_a G &&
+  R_b = r_b G &&
+  R_c = r_c G \\\\
+\end{aligned}
+$$
 
 2. They agree on an aggregated nonce point $R$.
 
@@ -288,11 +386,16 @@ $$
 
 5. They each compute their share of the signature.
 
-| Name | Signature |
-|:----:|:---------:|
-| Alice | $s_a = r_a + e d_a$ |
-| Bob   | $s_b = r_b + e d_b$ |
-| Carol | $s_c = r_c + e d_c$ |
+$$
+\begin{aligned}
+& \text{Alice} &&
+  \text{Bob}   &&
+  \text{Carol} \\\\
+& s_a = r_a + e d_a &&
+  s_b = r_b + e d_b &&
+  s_c = r_c + e d_c \\\\
+\end{aligned}
+$$
 
 6. They send each other their $s$ values and aggregate by summing them all up.
 
@@ -302,12 +405,12 @@ $$
 
 The final aggregated signature is $(R, s)$.
 
-To verify, recall that a signature $(R, s)$ is valid if:
+To verify, recall that a signature $(R, s)$ from pubkey $D$ is valid on message $m$ if:
 
 $$e = H(R\ \|\|\ D\ \|\|\ m)$$
 $$sG = R + eD$$
 
-And this is going to be the case for our aggregated signature. Recall how we computed $s$.
+And this is going to be the case for our aggregated signature. Recall how Alice, Bob and Carol aggregated $s$.
 
 $$
 \begin{align}
@@ -385,7 +488,7 @@ $$
 
 Rogue Key Attacks can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such an affirmation is called _Knowledge-of-Secret-Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. Perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
 
-Instead modern Bitcoin developers use a kind of commitment protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. I'm looking forward to discussing MuSig in another post. <sub><i>\*rubs hands in excitement</i></sub>
+Instead modern Bitcoin developers use a kind of commitment protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. ~I'm looking forward to discussing MuSig in another post~ Take a look at [my article about MuSig](/cryptography/musig) to learn what all the fuss is about.
 
 </details>
 
@@ -393,6 +496,6 @@ Instead modern Bitcoin developers use a kind of commitment protocol to avoid the
 
 In combination with [Taproot](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki), developers can embed arbitrary combinations of aggregated public keys into a single tweaked public key which encodes a highly complex array of possible spending conditions, but still looks like any old normal public key when used under normal conditions.
 
-Bitcoin developers can use multisignature signing schemes like [MuSig](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) and threshold signing protocols like [ROAST](https://eprint.iacr.org/2022/550) with much greater efficiency, security, and privacy than has ever been possible before with ECDSA.
+Bitcoin developers can use multisignature signing schemes like [MuSig](/cryptography/musig) and threshold signing protocols like [ROAST](https://eprint.iacr.org/2022/550) with much greater efficiency, security, and privacy than has ever been possible before with ECDSA.
 
 Any given public key can now be an aggregation of colossal numbers of child keys and scripts and threshold public keys and much much more.
