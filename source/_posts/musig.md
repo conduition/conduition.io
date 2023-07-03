@@ -211,13 +211,15 @@ Carol still has a chance to manipulate Alice and Bob into *signing* something th
 
 This attack's inner workings are sophisticated, and it took me a deal of effort to fully comprehend them. I'll summarize here, and post another article later which will go into more detail on how the math works.
 
-At first, Wagner's Attack seems similar to a Rogue Key Attack in that it requires the attacker to wait for other co-signers to reveal something first, and compute a response based on the revealed information. Although this attack requires some heavy computation, most of the work can be pre-computed in-advance by the attacker.
+At first, Wagner's Attack seems similar to a Rogue Key Attack in that it requires the attacker to wait for other co-signers to reveal something first, and compute a response based on the revealed information.
 
-After opening a number of concurrent signing sessions with Alice and Bob, Carol waits for her co-signers to first reveal their nonces $(R_a, R_b)$. Carol gives Alice and Bob a phony nonce $R_c'$. Alice and Bob, none-the-wiser, sign a number of apparently benign messages using $R_c'$. If executed correctly, Carol can aggregate the signatures on those benign messages into a _forged signature_ on an evil message which Alice and Bob never saw. Luckily for Carol's CPU she can pre-compute most of the aforementioned heavy computations _before_ asking Alice and Bob to sign anything, and the more concurrent signing sessions she can open, the less work she must do in the pre-computation stage.
+After opening a number of concurrent signing sessions with Alice and Bob, Carol waits for her co-signers to first reveal their nonces $(R_a, R_b)$ in each session. Carol gives Alice and Bob a phony nonce $R_c'$ in each session. Alice and Bob, none-the-wiser, sign a number of apparently benign messages using various values of $R_c'$.
+
+If executed correctly, Carol can aggregate the signatures on those benign messages into a _forged signature_ on an evil message which Alice and Bob never saw. This attack does require some heavy computation, but luckily for Carol's CPU, the more concurrent signing sessions she can open, the less work she must do.
 
 The fact that this works seems quite magical, but it's nothing more than some very eloquent analytical math working in tandem with an elegant search algorithm (Wagner's algorithm, to be exact). See [this paper](https://eprint.iacr.org/2018/417) for a full description of this attack applied to the CoSi algorithm, which is similar to MuSig1 but built on the assumption that each co-signer must provide a Knowledge-of-Secret-Key proof to avoid Rogue Key Attacks.
 
-In the interest of brevity, I've omitted a full accounting of how this attack works, but know the important part is this: ***Wagner's attack depends on the attacker learning his victims' public nonces before revealing his own.*** If the attacker cannot choose his nonce as a function of his victims' nonces, all the precomputation he did will be wasted.
+In the interest of brevity, I've omitted a full accounting of how this attack works, but know the important part is this: ***Wagner's attack depends on the attacker learning his victims' public nonces before revealing his own.*** If the attacker cannot choose his nonce as a function of his victims' nonces, all the work he did will be wasted.
 
 ## Nonce Commitments
 
