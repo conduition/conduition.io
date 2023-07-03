@@ -2,8 +2,7 @@
 title: MuSig1 - A Reasonably Secure Multisig Scheme
 date: 2023-06-29
 mathjax: true
-categories:
-  - cryptography
+category: cryptography
 ---
 
 # Introduction

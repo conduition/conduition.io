@@ -2,8 +2,7 @@
 title: Elliptic Curve Cryptography Resources
 date: 2023-06-22
 mathjax: true
-categories:
-  - cryptography
+category: cryptography
 ---
 
 
