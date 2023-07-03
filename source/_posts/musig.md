@@ -78,6 +78,8 @@ A slightly-less-obtuse solution would be to require each co-signer to commit to 
 
 Imagine everyone putting their pubkeys into envelopes and placing those envelopes on a table for all to see. Once everyone has put their envelopes on the table (e.g. everyone is fully committed), the co-signers can start tearing them open and revealing pubkeys. Any pubkeys which weren't committed to (by placing them on the table) cannot be trusted.
 
+> why does that work?
+
 By _committing in-advance_ to a public key, and then verifying the commitments of others, the co-signers ensure that nobody in their signing cohort has computed their public keys as a function of each other's public keys - i.e. every public key is chosen independently of each other.
 
 ### Example
@@ -97,7 +99,7 @@ $$
 \end{aligned}
 $$
 
-From Alice's perspective, she shares $c_a$ and receives $(c_b, c_c)$ from Bob and Carol. Once she has Bob and Carol's commitments she shares $D_a$ and receives $(D_b, D_c)$. She then check that $c_b = H_{\text{com}}(D_b)$ and that $c_c = H_{\text{com}}(D_c)$. If $D_b$ or $D_c$ do not match their respective commitments, Alice won't accept them.
+From Alice's perspective, she shares $c_a$ and receives $(c_b, c_c)$ from Bob and Carol. Once Alice has Bob and Carol's commitments she shares $D_a$ and receives $(D_b, D_c)$. She then check that $c_b = H_{\text{com}}(D_b)$ and that $c_c = H_{\text{com}}(D_c)$. If $D_b$ or $D_c$ do not match their respective commitments, Alice won't accept them.
 
 This format prevents the "who-goes-first" problem: It no longer matters who exposes their commitments or keys first, _as long as each participant has everyone else's commitments in hand before sharing their pubkey._ The output of a namespaced hash function can't be used to compute a rogue pubkey. The namespacing also makes the commitments useless for anything except verifying key commitments. At the same time, it locks Alice, Bob, and Carol into their choice of pubkeys, which they committed to _before_ seeing each other's pubkeys.
 
@@ -105,7 +107,7 @@ This format prevents the "who-goes-first" problem: It no longer matters who expo
 
 This does work on paper, but not so well on silicon. It has a glaring gotcha: **Public keys cannot be reused between signing sessions.**
 
-If Alice reveals her pubkey with Bob and Carol, then she can no longer safely use that key with a new unknown co-signer Dave. Dave comes into the co-signing cohort fresh, so Alice doesn't know his public key yet. Dave now has an opportunity to collude with Bob or Carol.
+Let's say Alice, Bob and Carol want to add a new signer, Dave, to their group. If Alice reveals her pubkey with Bob and Carol, then she can no longer safely use that key with Dave. Dave comes into the co-signing cohort fresh, so Alice doesn't know his public key yet. Dave now has an opportunity to collude with Bob or Carol.
 
 If Dave can convince Bob or Carol to give him Alice's pubkey $D_a$, Dave can compute a rogue public key to exclude Alice from the new aggregated key.
 
@@ -279,7 +281,7 @@ $$
 L := \\{ D_a, D_b, D_c \\}
 $$
 
-We then hashed $L$ to produce the signing cohort's key coefficient. This coefficient is multiplied with each party's public key to produce the aggregated pubkey $D$.
+We then hashed $L$ to produce the signing cohort's key coefficient $\alpha$. This coefficient is multiplied with each party's public key to produce the aggregated pubkey $D$.
 
 $$
 \alpha = H_{\text{agg}}(L)
@@ -360,20 +362,24 @@ If anyone is aware of the intent behind this choice or why a global key coeffici
 
 # The Real MuSig1 Protocol
 
-After a long journey, we've arrived at the _almost_ fully justified MuSig1 protocol. Let's give Alice, Bob and Carol one more try at signing cooperatively.
+After a long journey, we've arrived at the _almost_ fully-justified MuSig1 protocol. Let's give Alice, Bob and Carol one more try at signing cooperatively.
 
 ## 1. Key Aggregation
 
 Co-signers share their public keys with one-another. Everyone can now compute each other's key coefficients, and thereby compute the aggregated pubkey.
 
 $$
-\begin{align}
-       L &= \\{ D_a, D_b, D_c \\}                      \\\\
-\alpha_a &= H_{\text{agg}}(L\ \|\|\ D_a)               \\\\
-\alpha_b &= H_{\text{agg}}(L\ \|\|\ D_b)               \\\\
-\alpha_c &= H_{\text{agg}}(L\ \|\|\ D_c)               \\\\
-       D &= \alpha_a D_a + \alpha_b D_b + \alpha_c D_c \\\\
-\end{align}
+L = \\{ D_a, D_b, D_c \\}
+$$
+$$
+\begin{aligned}
+& \alpha_a = H_{\text{agg}}(L\ \|\|\ D_a) &&
+  \alpha_b = H_{\text{agg}}(L\ \|\|\ D_b) &&
+  \alpha_c = H_{\text{agg}}(L\ \|\|\ D_c) \\\\
+\end{aligned}
+$$
+$$
+D = \alpha_a D_a + \alpha_b D_b + \alpha_c D_c
 $$
 
 The pseudo-random key coefficients $(\alpha_a, \alpha_b, \alpha_c)$ prevent any co-signers from executing a Rogue Key Attack, because they cannot analytically determine which rogue public key to offer to bring $D$ under their control.
@@ -449,7 +455,7 @@ Each co-signer can compute $e$ independently once $m$ is agreed upon and all non
 
 ## 6. Partial Signing
 
-Co-signers compute their partial signatures $(s_a, s_b, s_c)$ by multiplying their key coefficient, their private key, and the challenge $e$. They add their secret nonces on top to obscure their private key.
+Co-signers compute their partial signatures $(s_a, s_b, s_c)$ by multiplying their key coefficient, their private key, and the challenge $e$. They add their secret nonces on top to obscure their private keys.
 
 $$
 \begin{aligned}
