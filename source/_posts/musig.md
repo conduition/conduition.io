@@ -1,5 +1,5 @@
 ---
-title: MuSig1 - Safe Schnorr Multisignatures
+title: MuSig1 - A Reasonably Secure Multisig Scheme
 date: 2023-06-29
 mathjax: true
 categories:
@@ -8,7 +8,7 @@ categories:
 
 # Introduction
 
-In [my last post](/cryptography/schnorr/) I droned on about how well Schnorr kicks ECDSA in the teeth. I left off with a cliffhanger: Schnorr's oh-so-great _linear signature aggregation_ seems to be vulnerable to whomever shares their public key last.
+In [my last post](/cryptography/schnorr/) I droned on about how well Schnorr Signatures kick ECDSA in the teeth. I left off with a cliffhanger: Schnorr's oh-so-great _linear signature aggregation_ seems to be vulnerable to whomever shares their public key last.
 
 Thus I felt it would be appropriate to drone on today over the elegant solution offered by MuSig. MuSig is a protocol [proposed by Maxwell, Poelstra, Seurin and Wuille](https://eprint.iacr.org/2018/068) which allows co-signers to cooperatively sign a common message without the need to trust each other, or prove _Knowledge-of-Secret-Key_ (KOSK).
 
@@ -47,8 +47,6 @@ $$
 
 Let's return to Alice, Bob, and Carol in [my example from the Schnorr article](/cryptography/schnorr/#Naive-Example).
 
-The first and most obvious dragon we need to slay is the _Rogue Key Attack,_ [which I also introduced in my Schnorr Signatures article](/cryptography/schnorr/#HOWEVER).
-
 Our alphabet friends all anticipate signing the same messages but they do not yet know each other's public keys. They don't trust each other to give their honest public keys. Nobody is willing to share their public key yet, because others might collude to contribute a rogue key which gives the malicious parties sole ownership of the final aggregated pubkey.
 
 | Name | Public Key | Private Key |
@@ -59,13 +57,15 @@ Our alphabet friends all anticipate signing the same messages but they do not ye
 
 For example, Carol could wait for Alice and Bob to expose their public keys, and then declare hers as $D_c' = D_c - D_a - D_b$. After summing up all the public keys, Alice and Bob would compute an aggregated public key $D = D_c$, which gives sole to Carol.
 
+The first and most obvious dragon we need to slay is the _Rogue Key Attack,_ [which I also introduced in my Schnorr Signatures article](/cryptography/schnorr/#HOWEVER).
+
 ## Option 1: KOSK
 
 Rogue Keys can be avoided naively by requiring that each co-signer to prove she knows the private key for her public key. Such an affirmation is called _Knowledge-of-Secret-Key_ (KOSK).
 
 > why does that work?
 
-Carol picked $D_c'$ based on Alice and Bob's pubkeys, but the point she happened to choose is effectively a randomly sampled point on the curve, whose secret key Carol does not know. Forcing Carol to prove KOSK would prevent Alice and Bob from accepting such a maliciously computed rogue key.
+Carol picked $D_c'$ based on Alice and Bob's pubkeys, but the point she happened to choose is effectively a randomly sampled point on the curve, whose secret key Carol does not know. Forcing Carol to prove KOSK would prevent Alice and Bob from accepting such a maliciously-computed rogue key.
 
 ### The Problem
 
