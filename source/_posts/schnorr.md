@@ -181,7 +181,7 @@ $$
 R = rG
 $$
 
-3. Hash the the nonce point $R$, the signing public key $D$, and the message $m$ to get the challenge $e$.
+3. Hash the nonce point $R$, the signing public key $D$, and the message $m$ to get the challenge $e$.
 
 $$
 e = H(R\ \|\|\ D\ \|\|\ m)
