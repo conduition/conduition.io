@@ -11,12 +11,42 @@ description: >-
   and ravenously consuming other tasty morsels of knowledge.
 
 
-  Notice any errors in my work? Please let me know! 🧹 Contact me by email at
-  <a href="mailto:conduition@proton.me">conduition@proton.me</a> or
+  - [View my code on Github.](https://github.com/conduition) <a class="icon u-url" target="_blank" rel="noopener me" href="http://github.com/conduition" aria-label="github" title="github"><i class="fa-brands fa-github"></i></a>
+
+  - Contact me by email at <a href="mailto:conduition@proton.me">conduition@proton.me</a>
+
+  - [Download my PGP key here. <img src="/images/gnupg-logo.png" style="height: 14px;">](/meta/conduition.key.asc)
+
+
+  Notice any errors in my work? Please let me know! 🧹
+  <a href="mailto:conduition@proton.me">Contact me by email</a> or
   [suggest an edit on Github](https://github.com/conduition/conduition.io).
 
+  # Hiring
 
-  [Download my PGP key here. <img src="/images/gnupg-logo.png" style="height: 14px;">](/meta/conduition.key.asc)
+  - 🕰️ I have years of experience working in the cryptocurrency industry and other
+  security-centric work environments.
+
+  - 🧑‍💻 I'm strongly proficient in Python, JavaScript, and Golang.
+
+  - 💻 I have written and maintained front-end desktop apps used by hundreds of
+  thousands of people.
+
+  - 📡 I have designed and written back-end server architectures which securely process
+  traffic from millions of clients.
+
+  - 💸 I have earned thousands of USD in bug bounties.
+
+
+  As you can also see from [my scribblings](/archives/), I'm the kind of developer
+  who likes to dig deep into the highly technical mathematical inner workings of
+  protocols which others take for granted.
+
+
+  <a href="mailto:conduition@proton.me">Contact me by email</a> to discuss contract
+  based consulting or development work payable in Bitcoin. I'll also consider
+  long-term contracts or sponsorships depending on the subject matter.
+
 keywords: bitcoin scriptless smart contracts blockchain crypto cryptography lightning network
 author: Conduition
 language: en

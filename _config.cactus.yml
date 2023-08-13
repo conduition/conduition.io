@@ -27,10 +27,10 @@ nav:
 # You can optionally add a 'label' key to set the title attribute on the link.
 # 'icon' value will be used as title when 'label' is missing.
 social_links:
-  - icon: github
-    link: http://github.com/conduition
-  - icon: mail
-    link: mailto:conduition@proton.me
+  # - icon: github
+  #   link: http://github.com/conduition
+  # - icon: mail
+  #   link: mailto:conduition@proton.me
   # - icon: twitter
   #   link: /
   # - icon: facebook
