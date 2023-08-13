@@ -247,7 +247,7 @@ Guessing and checking isn't that great of an option, and so Carol can't practica
 
 Carol still has a chance to manipulate Alice and Bob into *signing* something they didn't intend to. When we're talking signatures with Bitcoin, a forgery is tantamount to the complete loss of one or more UTXOs. This attack is harder to understand than a Rogue Key attack, but don't let its obscurity fool you: The threat is very real. It is called [Wagner's Generalized Birthday Attack](https://www.iacr.org/archive/crypto2002/24420288/24420288.pdf).
 
-This attack's inner workings are sophisticated, and it took me a deal of effort to fully comprehend them. I'll summarize here, but if you're interested, I [wrote a full article on the subject](/cryptography/wagner) which goes into more far detail on how the math behind the attack works.
+This attack's inner workings are sophisticated, and it took me a deal of effort to fully comprehend them. I'll summarize here, but if you're interested, I [wrote a full article on the subject](/cryptography/wagner/) which goes into more far detail on how the math behind the attack works.
 
 At first, Wagner's Attack seems similar to a Rogue Key Attack in that it requires the attacker to wait for other co-signers to reveal something first, and compute a response based on the revealed information.
 

@@ -487,7 +487,7 @@ $$
 
 Rogue Key Attacks can be fixed naively by requiring that each signer to prove she knows the private key for her public key. Such an affirmation is called _Knowledge-of-Secret-Key_ (KOSK). This is flawed because not every key I want to aggregate with is going to be fully under my control all the time. Perhaps I want to aggregate a public key right now, but I can only expect to learn its secret key next week (e.g. in a [Discreet Log Contract](https://dci.mit.edu/smart-contracts). Perhaps I want to aggregate a public key which _is itself an aggregated key,_ whose component secret keys are owned by 3rd parties.
 
-Instead modern Bitcoin developers use a kind of commitment protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. ~I'm looking forward to discussing MuSig in another post~ Take a look at [my article about MuSig](/cryptography/musig) to learn what all the fuss is about.
+Instead modern Bitcoin developers use a kind of scrambling protocol to avoid the risk of rogue keys. This is what [_MuSig_](https://tlu.tarilabs.com/cryptography/The_MuSig_Schnorr_Signature_Scheme) offers. ~I'm looking forward to discussing MuSig in another post~ Take a look at [my article about MuSig](/cryptography/musig/) to learn what all the fuss is about.
 
 </details>
 
@@ -495,6 +495,6 @@ Instead modern Bitcoin developers use a kind of commitment protocol to avoid the
 
 In combination with [Taproot](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki), developers can embed arbitrary combinations of aggregated public keys into a single tweaked public key which encodes a highly complex array of possible spending conditions, but still looks like any old normal public key when used under normal conditions.
 
-Bitcoin developers can use multisignature signing schemes like [MuSig](/cryptography/musig) and threshold signing protocols like [ROAST](https://eprint.iacr.org/2022/550) with much greater efficiency, security, and privacy than has ever been possible before with ECDSA.
+Bitcoin developers can use multisignature signing schemes like [MuSig](/cryptography/musig/) and threshold signing protocols like [ROAST](https://eprint.iacr.org/2022/550) with much greater efficiency, security, and privacy than has ever been possible before with ECDSA.
 
 Any given public key can now be an aggregation of colossal numbers of child keys and scripts and threshold public keys and much much more.

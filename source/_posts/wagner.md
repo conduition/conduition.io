@@ -7,7 +7,7 @@ category: cryptography
 
 # Introduction
 
-_MuSig_ is a protocol which allows mutually distrustful parties to safely create _aggregated_ digital signatures together. I highly recommend you read [my MuSig article](/cryptography/musig) before diving into this one, as it lays down the context. If you're already familiar with MuSig and Schnorr, carry on!
+_MuSig_ is a protocol which allows mutually distrustful parties to safely create _aggregated_ digital signatures together. I highly recommend you read [my MuSig article](/cryptography/musig/) before diving into this one, as it lays down the context. If you're already familiar with MuSig and Schnorr, carry on!
 
 The MuSig protocol has several iterations:
 
