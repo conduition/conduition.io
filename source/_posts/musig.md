@@ -356,7 +356,7 @@ $$
 \end{aligned}
 $$
 
-The nonce commitments $(t_a, t_b, t_c)$ are shared at will amongst co-signers. _Note that nonce commitments can be safely cached and pre-shared en masse to improve round-trip performance without endangering security._
+The nonce commitments $(t_a, t_b, t_c)$ are shared at will amongst co-signers. Note that nonce _commitments_ can be safely cached and pre-shared en masse to improve round-trip performance without endangering security. But [the nonces themselves should not be pre-shared until a message for signing is fixed](https://medium.com/blockstream/insecure-shortcuts-in-musig-2ad0d38a97da).
 
 ## 3. Message Choice
 
