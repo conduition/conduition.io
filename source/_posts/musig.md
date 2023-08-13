@@ -128,25 +128,33 @@ Instead of committing to public keys ahead of time, what if the final aggregated
 
 ### Example
 
-To arrange this, we might use _a namespaced hash of the co-signers' keys_ to scramble the final aggregated key. Let's say $L$ is a determinstic (e.g. lexically-sorted) encoding of Alice, Bob and Carol's public keys.
+To arrange this, we might use _namespaced hashes of the co-signers' keys_ to scramble the final aggregated key. Let's say $L$ is a determinstic (e.g. lexically-sorted) encoding of Alice, Bob and Carol's public keys.
 
 $$
 L := \\{ D_a, D_b, D_c \\}
 $$
 
-Each co-signer could compute a namespaced hash of $L$ once all parties have shared their pubkeys.
+Each co-signer could compute a namespaced hash of $L$ once all parties have shared their pubkeys. They also commit the hash to their own pubkey, so that each hash is unique per signer. We call these hashes _key coefficients_ and denote them with the greek letter $\alpha$ <sub>(alpha)</sub>.
 
 $$
-\alpha = H_{\text{agg}}(L)
+\begin{align}
+\alpha_a &= H_{\text{agg}}(L\ \|\|\ D_a) \\\\
+\alpha_b &= H_{\text{agg}}(L\ \|\|\ D_b) \\\\
+\alpha_c &= H_{\text{agg}}(L\ \|\|\ D_c) \\\\
+\end{align}
 $$
 
-Some of the pubkeys in $L$ might be rogue, but that won't matter because of the next step. When computing the aggregated key, all parties multiply the whole sum of pubkeys by $\alpha$. This forms the final aggregated key $D$.
+Some of the pubkeys in $L$ might be rogue, but that won't matter because of the next step. When computing the aggregated key, all parties multiply their pubkeys by their respective key coefficients. This forms the final aggregated key $D$.
 
 $$
-D = \alpha(D_a + D_b + D_c)
+D = \alpha_a D_a + \alpha_b D_b + \alpha_c D_c
 $$
 
-If $H$ is cryptographically secure, it will be [_preimage resistant_](https://crypto.stackexchange.com/questions/1173/what-are-preimage-resistance-and-collision-resistance-and-how-can-the-lack-ther). Carol will not be able to find a rogue key which would result in a compromised aggregated key, because she cannot predict the output of $H_{\text{agg}}(L)$. Even if Carol has a large set of keys which she controls, the best Carol can do is simply guess and check random rogue keys until she finds one which produces a compromised aggregated key $D$.
+Each co-signer can easily compute the key coefficients of their peers and determine $D$ independently, provided they have a full list $L$ of the cohort's pubkeys. In fact, they _must_ do this, because otherwise they cannot tell the difference between an honestly scrambled key $\alpha_c D_c$ and a maliciously computed rogue key $D_c' = D_c - D_a - D_b$.
+
+If $H_{\text{agg}}$ is a cryptographically secure hash function, it will be [_preimage resistant_](https://crypto.stackexchange.com/questions/1173/what-are-preimage-resistance-and-collision-resistance-and-how-can-the-lack-ther). Carol will not be able to find a rogue key which would result in a compromised aggregated key, because she cannot predict the output of $H_{\text{agg}}$. Even if Carol has a large set of keys which she controls, the best Carol can do is simply guess and check random rogue keys until she finds one which produces a compromised aggregated key $D$.
+
+Note that each key coefficient _must_ be distinct per-signer. A _global_ key coefficient, such as $\alpha = H_{\text{agg}}(L)$ could be factored out from each key, allowing Carol to execute a rogue key attack as before, except she multiplies her private key $d_c$ by the common key coefficient $\alpha$. Thus, the key coefficients must be unique per signer.
 
 Nonces would be computed as they were in the naive aggregation example.
 
@@ -182,26 +190,56 @@ $$
 & \text{Alice} &&
   \text{Bob}   &&
   \text{Carol} \\\\
-& s_a = r_a + \alpha e d_a &&
-  s_b = r_b + \alpha e d_b &&
-  s_c = r_c + \alpha e d_c \\\\
+& s_a = r_a + e \alpha_a d_a &&
+  s_b = r_b + e \alpha_b d_b &&
+  s_c = r_c + e \alpha_c d_c \\\\
 \end{aligned}
 $$
 
-The final signature would be aggregated so that $\alpha$ factors out alongside $e$.
+This mirrors the way in which the aggregated pubkey $D$ was computed.
+
+The final signature $s$ can then be aggregated like so.
+
+$$
+s = \overbrace{r_a + e \alpha_a d_a}^{s_a} +
+    \overbrace{r_b + e \alpha_b d_b}^{s_b} +
+    \overbrace{r_c + e \alpha_c d_c}^{s_c}
+$$
+
+To better visualize the structure here, group all the nonces and keys separately, and factor out $e$ from the keys.
 
 $$
 \begin{align}
-s &= \overbrace{r_a + \alpha e d_a}^{s_a} +
-     \overbrace{r_b + \alpha e d_b}^{s_b} +
-     \overbrace{r_c + \alpha e d_c}^{s_c}                           \\\\
-  &= r_a + r_b + r_c + \alpha e d_a + \alpha e d_b + \alpha e d_c   \\\\
+s &= r_a + r_b + r_c + e \alpha_a d_a + e \alpha_b d_b + e \alpha_c d_c   \\\\
   &= \underbrace{r_a + r_b + r_c}\_{\text{Nonces}} +
-     e \alpha (\underbrace{d_a + d_b + d_c}\_{\text{Private Keys}}) \\\\
+     e (\underbrace{\alpha_a d_a + \alpha_b d_b + \alpha_c d_c}\_{\text{Private Keys and Key Coefficients}}) \\\\
 \end{align}
 $$
 
-We've really gotten somewhere with this idea! Rogue key attacks are no longer feasible against our fledgling multisignature protocol, because an attacker must play guess and check to figure out which rogue public key to declare to influence the resulting aggregated key, all while the attacker's peers are waiting impatiently for her response.
+Recall the definition of the aggregated nonce and aggregated public key.
+
+$$
+\begin{align}
+R &= R_a + R_b + R_c       \\\\
+  &= r_a G + r_b G + r_c G \\\\
+  &= (r_a + r_b + r_c)G    \\\\
+D &= \alpha_a D_a + \alpha_b D_b + \alpha_c D_c    \\\\
+  &= (\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
+\end{align}
+$$
+
+Therefore:
+
+$$
+\begin{align}
+sG &= (r_a + r_b + r_c)G &&+ e(\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
+   &= R                  &&+ eD                                             \\\\
+\end{align}
+$$
+
+Huzzah, the signature is valid!
+
+We've really gotten somewhere with this idea. Rogue key attacks are no longer feasible against our fledgling multisignature protocol, because an attacker must play guess and check to figure out which rogue public key to declare to influence the resulting aggregated key, all while the attacker's peers are waiting impatiently for her response.
 
 # A Subtler Attack
 
@@ -209,7 +247,7 @@ Guessing and checking isn't that great of an option, and so Carol can't practica
 
 Carol still has a chance to manipulate Alice and Bob into *signing* something they didn't intend to. When we're talking signatures with Bitcoin, a forgery is tantamount to the complete loss of one or more UTXOs. This attack is harder to understand than a Rogue Key attack, but don't let its obscurity fool you: The threat is very real. It is called [Wagner's Generalized Birthday Attack](https://www.iacr.org/archive/crypto2002/24420288/24420288.pdf).
 
-This attack's inner workings are sophisticated, and it took me a deal of effort to fully comprehend them. I'll summarize here, and post another article later which will go into more detail on how the math works.
+This attack's inner workings are sophisticated, and it took me a deal of effort to fully comprehend them. I'll summarize here, but if you're interested, I [wrote a full article on the subject](/cryptography/wagner) which goes into more far detail on how the math behind the attack works.
 
 At first, Wagner's Attack seems similar to a Rogue Key Attack in that it requires the attacker to wait for other co-signers to reveal something first, and compute a response based on the revealed information.
 
@@ -263,9 +301,9 @@ $$
 & \text{Alice} &&
   \text{Bob}   &&
   \text{Carol} \\\\
-& s_a = r_a + \alpha e d_a &&
-  s_b = r_b + \alpha e d_b &&
-  s_c = r_c + \alpha e d_c \\\\
+& s_a = r_a + e \alpha_a d_a &&
+  s_b = r_b + e \alpha_b d_b &&
+  s_c = r_c + e \alpha_c d_c \\\\
 \end{aligned}
 $$
 
@@ -273,98 +311,9 @@ $$
 s = s_a + s_b + s_c
 $$
 
-## One Last Caveat
-
-Alright, I have to admit I'm stumped about the next design choice. As it is, this protocol seems secure, but there is still one minor difference between the co-signing protocol I've described and the official protocol described in [the MuSig1 paper](https://eprint.iacr.org/2018/068).
-
-Recall we defined $L$ to be a determinstic (sorted) encoding of Alice, Bob and Carol's public keys.
-
-$$
-L := \\{ D_a, D_b, D_c \\}
-$$
-
-We then hashed $L$ to produce the signing cohort's key coefficient $\alpha$. This coefficient is multiplied with each party's public key to produce the aggregated pubkey $D$.
-
-$$
-\alpha = H_{\text{agg}}(L)
-$$
-$$
-D = \alpha(D_a + D_b + D_c)
-$$
-
-When computing signatures, each co-signer computes their partial signature by multiplying their private key by the same key coefficient $\alpha$.
-
-
-$$
-\begin{aligned}
-& \text{Alice} &&
-  \text{Bob}   &&
-  \text{Carol} \\\\
-& s_a = r_a + \alpha e d_a &&
-  s_b = r_b + \alpha e d_b &&
-  s_c = r_c + \alpha e d_c \\\\
-\end{aligned}
-$$
-
-
-### Would the _Real_ MuSig Please Stand Up?
-
-In the protocol I just described, we have been using a single key coefficient $\alpha$ which is common to the whole cohort. In the real MuSig1 protocol, _each co-signer has their own key coefficient,_ which everyone else can compute independently.
-
-Co-signer-specific key coefficients $(\alpha_a, \alpha_b, \alpha_c)$ are computed as a hash of $L$ concatenated with the public key of one particular co-signer.
-
-
-$$
-\begin{aligned}
-& \text{Alice} &&
-  \text{Bob}   &&
-  \text{Carol} \\\\
-& \alpha_a = H_{\text{agg}}(L\ \|\|\ D_a) &&
-  \alpha_b = H_{\text{agg}}(L\ \|\|\ D_b) &&
-  \alpha_c = H_{\text{agg}}(L\ \|\|\ D_c) \\\\
-\end{aligned}
-$$
-
-When aggregating public keys, $D$ will be the sum of each public key multiplied by its respective key coefficient.
-
-$$
-D = \alpha_a D_a + \alpha_b D_b + \alpha_c D_c
-$$
-
-Each co-signer can easily compute the key coefficients of their peers and determine $D$ independently, provided they have a full list $L$ of the cohort's pubkeys.
-
-When signing, each co-signer computes a partial signature by multiplying their private key by **their own key coefficent**.
-
-| Name | Signature |
-|:----:|:---------:|
-| Alice | $s_a = r_a + \alpha_a e d_a$ |
-| Bob   | $s_b = r_b + \alpha_b e d_b$ |
-| Carol | $s_c = r_c + \alpha_c e d_c$ |
-
-The aggregated signature can be broken down as follows.
-
-$$
-\begin{align}
-s &= \overbrace{r_a + \alpha_a e d_a}^{s_a} +
-     \overbrace{r_b + \alpha_b e d_b}^{s_b} +
-     \overbrace{r_c + \alpha_c e d_c}^{s_c}                              \\\\
-  &= r_a + r_b + r_c + \alpha_a e d_a + \alpha_b e d_b + \alpha_c e d_c  \\\\
-  &= \underbrace{r_a + r_b + r_c}\_{\text{Nonces}} +
-     e (\underbrace{\alpha_a d_a + \alpha_b d_b + \alpha_c d_c}\_{\text{Private Keys and Key Coefficients}}) \\\\
-\end{align}
-$$
-
-> but why?
-
-Great question. I found no justification for this decision anywhere online, including the MuSig1 whitepaper. The only algebraic distinction between this approach and a global key coefficient $\alpha$ is that with key-specific coefficients, they cannot be factored out from the private keys alongside $e$, since they are distinct in each term $\alpha_a d_a$, $\alpha_b d_b$, etc. But the motivation for this apparently intentional design choice is not clear to me. A global key coefficient would be faster for large signing cohorts, since each co-signer would only need to run $H(L)$ once, instead of running it once for every co-signer in the cohort.
-
-It's possible the MuSig1 authors made this choice to streamline their security proof, and not because it was essential for the security of the scheme itself. Nevertheless, best not to go off and implement MuSig1 with global key coefficients, just in case.
-
-If anyone is aware of the intent behind this choice or why a global key coefficient $\alpha$ would be Bad News™, please [let me know](mailto:conduition@proton.me)! Or [submit a pull request to fix this article](https://github.com/conduition/conduition.io).
-
 # The Real MuSig1 Protocol
 
-After a long journey, we've arrived at the _almost_ fully-justified MuSig1 protocol. Let's give Alice, Bob and Carol one more try at signing cooperatively.
+We've finally arrived at the fully-justified MuSig1 protocol. Let's give Alice, Bob and Carol one more try at signing cooperatively.
 
 ## 1. Key Aggregation
 
@@ -464,9 +413,9 @@ $$
 & \text{Alice} &&
   \text{Bob}   &&
   \text{Carol}                  \\\\
-& s_a = r_a + \alpha_a e d_a &&
-  s_b = r_b + \alpha_b e d_b &&
-  s_c = r_c + \alpha_c e d_c    \\\\
+& s_a = r_a + e \alpha_a d_a &&
+  s_b = r_b + e \alpha_b d_b &&
+  s_c = r_c + e \alpha_c d_c    \\\\
 \end{aligned}
 $$
 
@@ -501,29 +450,20 @@ This will be correct for the aggregated signature.
 
 $$
 \begin{align}
-s &= \overbrace{r_a + \alpha_a e d_a}^{s_a} +
-     \overbrace{r_b + \alpha_b e d_b}^{s_b} +
-     \overbrace{r_c + \alpha_c e d_c}^{s_c}                              \\\\
-  &= r_a + r_b + r_c + \alpha_a e d_a + \alpha_b e d_b + \alpha_c e d_c  \\\\
+s &= \overbrace{r_a + e \alpha_a d_a}^{s_a} +
+     \overbrace{r_b + e \alpha_b d_b}^{s_b} +
+     \overbrace{r_c + e \alpha_c d_c}^{s_c}                              \\\\
+  &= r_a + r_b + r_c + e \alpha_a d_a + e \alpha_b d_b + e \alpha_c d_c  \\\\
   &= \underbrace{r_a + r_b + r_c}\_{\text{Nonces}} +
      e (\underbrace{\alpha_a d_a + \alpha_b d_b + \alpha_c d_c}\_{\text{Private Keys and Key Coefficients}}) \\\\
 \end{align}
 $$
-
-Recall the definition of the aggregated nonce and aggregated public key.
-
 $$
 \begin{align}
-R &= R_a + R_b + R_c       \\\\
-  &= r_a G + r_b G + r_c G \\\\
-  &= (r_a + r_b + r_c)G    \\\\
-D &= \alpha_a D_a + \alpha_b D_b + \alpha_c D_c    \\\\
-  &= (\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
+R &= (r_a + r_b + r_c)G \\\\
+D &= (\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
 \end{align}
 $$
-
-Therefore:
-
 $$
 \begin{align}
 sG &= (r_a + r_b + r_c)G &&+ e(\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
@@ -535,4 +475,4 @@ $$
 
 I have a soft-spot for MuSig1 over MuSig2, because it is dumb-simple compared to the magic of MuSig2.
 
-MuSig2 has some fancy sauce that helps it avoid the whole nonce-commitment issue, without leaving it vulnerable to Wagner's Attack. Perhaps another day I'll discuss MuSig2, but I think next I want to cover Wagner's Attack in more detail. It's surprising how such an apparently implausible attack is made trivial by something as simple as a list-searching algorithm, and I find the mechanics very much worth discussing.
+MuSig2 has some fancy sauce that helps it avoid the whole nonce-commitment issue, without leaving it vulnerable to Wagner's Attack. Perhaps another day I'll discuss MuSig2.
