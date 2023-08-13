@@ -1187,7 +1187,7 @@ However, simply because _my_ code does not compute solutions fast enough doesn't
 
 Thankfully, the whole attack has been made obsolete against the real MuSig, due to the nonce commitment round which was introduced in the updated MuSig protocol. Without the option to choose rogue nonces, Carol cannot control the challenges.
 
-However, as [Blockstream's Jonas Nick writes](https://medium.com/blockstream/insecure-shortcuts-in-musig-2ad0d38a97da), Wagner's Attack is definitely still applicable to MuSig in some edgecases though. It pays for devs to really understand how this attack works, so that hopefully we can avoid reintroducing the same vulnerability in when creating new protocols or when optimizing existing systems.
+However, as [Blockstream's Jonas Nick writes](https://medium.com/blockstream/insecure-shortcuts-in-musig-2ad0d38a97da), Wagner's Attack is definitely still applicable to MuSig in some edgecases though. It pays for devs to really understand how this attack works, so that hopefully we can avoid reintroducing the same vulnerability when creating new protocols or when optimizing existing systems.
 
 The subtle math behind the attack is fascinating. It goes to show that however experienced one might be, the true test of a cryptosystem occurs when it is exposed to a critical and observant community. It is _absolutely essential_ for experts to attack each other's systems. There's simply no way for any one person (or even a group of people) to collectively hold in their mind all the myriad ways their system could be attacked.
 
