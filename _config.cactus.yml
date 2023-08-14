@@ -99,8 +99,8 @@ error_404:
 #   - grayout: whether to enable a hover effect on the logo
 logo:
   enabled: true
-  width: 96
-  height: 96
+  width: 64
+  height: 64
   url: /images/lightning-bolt-192.png
   gravatar: false
   grayout: true
