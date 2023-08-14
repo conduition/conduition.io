@@ -5,7 +5,7 @@
 # Link to a page that gives an overview of all your projects.
 # This can be an external link (e.g., to you GitHub profile) or to another
 # page within your website.
-projects_url: http://github.com/conduition
+projects_url: https://github.com/conduition
 
 # Set the page direction to RTL or LTR. default is LTR. (if you set it 'rtl', the 'vazir' font will be loaded.)
 direction: ltr
@@ -17,7 +17,7 @@ nav:
   home: /
   articles: /archives/
   Categories: /categories/
-  projects: http://github.com/conduition
+  projects: https://github.com/conduition
 
 
 # Links to your social media accounts.
@@ -28,7 +28,7 @@ nav:
 # 'icon' value will be used as title when 'label' is missing.
 social_links:
   # - icon: github
-  #   link: http://github.com/conduition
+  #   link: https://github.com/conduition
   # - icon: mail
   #   link: mailto:conduition@proton.me
   # - icon: twitter
