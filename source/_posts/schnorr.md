@@ -240,7 +240,7 @@ $$
 
 Note that:
 
-- $r$ and $d$ are both randomly sampled from the set of modulo $n$, AKA $\mathbb{Z}\_n$.
+- $r$ and $d$ are both randomly sampled from the set of integers modulo $n$, AKA $\mathbb{Z}\_n$.
 - The nonce $r$ changes for every signature whereas the private key $d$ remains consistent.
 - $e$ can be computed by anyone who knows the (presumably) public parameters $(R, D, m)$.
 
