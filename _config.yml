@@ -18,6 +18,13 @@ description: >-
   - [Download my PGP key here. <img src="/images/gnupg-logo.png" style="height: 14px;">](/meta/conduition.key.asc)
 
 
+  [Follow me on Nostr](https://iris.to/npub1l6uy9chxyn943cmylrmukd3uqdq8h623nt2gxfh4rruhdv64zpvsx6zvtg).
+
+    - Pubkey: `npub1l6uy9chxyn943cmylrmukd3uqdq8h623nt2gxfh4rruhdv64zpvsx6zvtg`
+    - Profile: `nprofile1qqs0awzzutnzfj6cudj03a7txc7qxsrma9ge44yrym6337tkkd23qkg32nsh9`
+    - NIP-05: `conduition@conduition.io`
+
+
   Notice any errors in my work? Please let me know! 🧹
   <a href="mailto:conduition@proton.me">Contact me by email</a> or
   [suggest an edit on Github](https://github.com/conduition/conduition.io).
@@ -132,6 +139,7 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - .well-known/nostr.json
 exclude:
 ignore:
 
