@@ -211,7 +211,7 @@ SSS seems simple, but it is an easy protocol to screw up in practice.
 
 But still, the power of SSS is undeniable, especially as a primitive when combined with other tools.
 
-Before we demonstrate how shareholders can trustlessly issue new shares, I want to take a moment to learn about how $f(x)$ can be interpolated. If you're already familiar with polynomial interpolation, [click here to skip ahead](#Issuing-New-Shares).
+Before we demonstrate how shareholders can trustlessly issue new shares, I want to take a moment to learn about how $f(x)$ can be interpolated. If you're already familiar with polynomial interpolation, [click here to skip ahead](#Issuing-a-New-Share).
 
 # Interpolation
 
