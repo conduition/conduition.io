@@ -5,7 +5,7 @@ mathjax: true
 category: cryptography
 ---
 
-Shamir's Secret Sharing (SSS) is a well known tool in the cryptography community. It is used in protocols like [SLIP39](https://github.com/satoshilabs/slips/blob/master/slip-0039.md) and [FROST](https://eprint.iacr.org/2020/852). SSS is easily overhyped because of its property of [information-theoretic security](https://en.wikipedia.org/wiki/Information-theoretic_security) (it is secure even against adversaries who have infinite computational power).
+Shamir's Secret Sharing (SSS) is a well known tool in the cryptography community. It is used in protocols like [SLIP39](https://github.com/satoshilabs/slips/blob/master/slip-0039.md) and [FROST](https://eprint.iacr.org/2020/852). SSS is popular because of its property of [information-theoretic security](https://en.wikipedia.org/wiki/Information-theoretic_security) (it is secure even against adversaries who have infinite computational power).
 
 SSS is a powerful cryptographic tool, but it struggles in terms of flexibility. If a share is lost, it is not easy to issue new ones. Adding new shares is possible if enough shares are brought together to recover the original secret, but what if shareholders do not wish to reveal their shares to each other yet? What if they _never_ want to reveal their secret shares, as would be the case with a threshold multisignature protocol such as [FROST](https://eprint.iacr.org/2020/852)?
 
