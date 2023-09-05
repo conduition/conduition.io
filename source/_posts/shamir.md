@@ -970,7 +970,7 @@ Both methods are very similar and share similar security proofs. Stinson and Wei
 
 ## Conclusion
 
-Other interesting extensions to Shamir's Secret Sharing include [changing the threshold](https://uwspace.uwaterloo.ca/bitstream/handle/10012/6858/nojoumian_mehrdad.pdf?sequence=1#subsection.4.3.1), removing a shareholder, or modifying the shared secret in a verifiable fashion.
+Other interesting extensions to Shamir's Secret Sharing include [changing the threshold](/cryptography/shamir-resharing/), removing a shareholder, or modifying the shared secret in a verifiable fashion.
 
 I might spend a bit of time to write a demo implementation of this algorithm in Python or Rust in the near future if there is sufficient interest.
 
