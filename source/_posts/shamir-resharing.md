@@ -1,5 +1,5 @@
 ---
-title: Regenerating Shamir Secret Shares to Change the Threshold
+title: Resharing Shamir Secret Shares to Change the Threshold
 date: 2023-09-06
 mathjax: true
 category: cryptography
