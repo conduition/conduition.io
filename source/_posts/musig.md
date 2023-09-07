@@ -471,6 +471,19 @@ sG &= (r_a + r_b + r_c)G &&+ e(\alpha_a d_a + \alpha_b d_b + \alpha_c d_c)G \\\\
 \end{align}
 $$
 
+If the final signature is not valid, one of the co-signers must have submitted an invalid partial signature. Participants within the group who know each other's public keys and nonces can determine who is responsible by verifying each partial signature separately.
+
+$$
+\begin{aligned}
+& \text{Alice} &&
+  \text{Bob}   &&
+  \text{Carol}                  \\\\
+& s_aG = R_a + e \alpha_a D_a &&
+  s_bG = R_b + e \alpha_b D_b &&
+  s_cG = R_c + e \alpha_c D_c    \\\\
+\end{aligned}
+$$
+
 ## Conclusion
 
 I have a soft-spot for MuSig1 over MuSig2, because it is dumb-simple compared to the magic of MuSig2.
