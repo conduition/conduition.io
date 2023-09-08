@@ -507,7 +507,7 @@ $$ x = z - y $$
 
 Perhaps Bob can convince us that he'll forfeit a private key if he misbehaves. But private keys are just random numbers, and there are absurdly many of them. Bob can generate new ones on demand at any time. Bob's commitment to expose $x$ is hollow unless he can also convince Alice that he has something to lose by exposing it.
 
-This leads us to a new question: How can Bob _meaningfully_ convince ALice that this key $x$ is valuable to him, and that he doesn't want to expose it? This is a complex topic, worth discussing in a separate article.
+This leads us to a new question: How can Bob _meaningfully_ convince ALice that this key $x$ is valuable to him, and that he doesn't want to expose it? This is a complex topic, [worth discussing in a separate article](/scriptless/keycommit/).
 
 Most commonly, _financial commitment_ is the de-facto standard. Bob must intentionally place himself at risk of losing money if $x$ is exposed. This will help convince Alice that, provided Bob is a rational actor, he won't attempt to cheat.
 
