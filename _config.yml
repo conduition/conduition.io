@@ -6,9 +6,8 @@
 title: Conduition
 subtitle: ''
 description: >-
-  The personal blog of a pseudonymous cypherpunk. I'm presently focused on learning
-  about scriptless Bitcoin contracts, multi-party computation, zero-knowledge proofs,
-  and ravenously consuming other tasty morsels of knowledge.
+  The personal blog of a pseudonymous cypherpunk. My specialties are cryptography,
+  scriptless smart contracts, and multi-party computation.
 
 
   - [View my code on Github.](https://github.com/conduition) <a class="icon u-url" target="_blank" rel="noopener me" href="https://github.com/conduition" aria-label="github" title="github"><i class="fa-brands fa-github"></i></a>
@@ -24,6 +23,12 @@ description: >-
     - Profile: `nprofile1qqs0awzzutnzfj6cudj03a7txc7qxsrma9ge44yrym6337tkkd23qkg32nsh9`
     - NIP-05: `conduition@conduition.io`
 
+  # My Work
+
+  I maintain the [`secp`](https://crates.io/crates/secp) and [`musig2`](https://crates.io/crates/musig2)
+  Rust crates, and love to contribute to cryptographic open source projects
+  which pique my interest.
+
 
   Notice any errors in my work? Please let me know! 🧹
   <a href="mailto:conduition@proton.me">Contact me by email</a> or
@@ -34,7 +39,7 @@ description: >-
   - 🕰️ I have years of experience working in the cryptocurrency industry and other
   security-centric work environments.
 
-  - 🧑‍💻 I'm strongly proficient in Python, JavaScript, and Golang.
+  - 🧑‍💻 I'm strongly proficient in Python, JavaScript, Golang, and Rust.
 
   - 💻 I have written and maintained front-end desktop apps used by hundreds of
   thousands of people.
