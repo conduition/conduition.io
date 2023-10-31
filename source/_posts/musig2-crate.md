@@ -68,7 +68,7 @@ let tweak: [u8; 32] = sha256(/* ... */);
 let tweaked_ctx = key_agg_ctx.with_taproot_tweak(&tweak)?;
 ```
 
-The `musig2` crate provides an idiot-proof stateful signing API suitable for use by application developers or downstream protocol implementor. Rust's lifetime system ensures at compile time that secret nonces cannot be reused (which would suck).
+The `musig2` crate provides an idiot-proof stateful signing API suitable for use by application developers or downstream protocol implementors. Rust's lifetime system ensures at compile time that secret nonces cannot be reused (which would suck).
 
 Start by creating a [`FirstRound`](https://docs.rs/musig2/latest/musig2/struct.FirstRound.html), in which you exchange nonces with your co-signers.
 
