@@ -125,7 +125,7 @@ There are many ways to skin this cat. Given $n$ data points, the polynomial we i
 - Newton Interpolation
 - Inverting the Vandermonde Matrix (uses linear algebra)
 
-For thhe time being, assume we have some black box interpolation algorithm $I(P) \rightarrow f$ which takes in some set of $n$ points called $P$, and spits out a polynomial $f(x)$ which has degree at most $n - 1$. I'll discuss how $I(P)$ works a bit later. By now you're probably dying to know how this all applies to Shamir's Secret Sharing.
+For the time being, assume we have some black box interpolation algorithm $I(P) \rightarrow f$ which takes in some set of $n$ points called $P$, and spits out a polynomial $f(x)$ which has degree at most $n - 1$. I'll discuss how $I(P)$ works a bit later. By now you're probably dying to know how this all applies to Shamir's Secret Sharing.
 
 # Shamir's Scheme
 
