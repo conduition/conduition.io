@@ -307,7 +307,7 @@ $$
 
 Notice how $L_i(z)$ only needs $\\{x_1, x_2, ... x_t\\}$ in order to be evaluated - its definition doesn't require any of the $y$-coordinate values, so $L_i(z)$ can be computed on any input $z$ by anyone who knows $\\{x_1, x_2, ..., x_t\\}$, whether or not they know the corresponding evaluation outputs $\\{y_1, y_2, ..., y_t\\}$.
 
-A common way that modern academic papers will represent the basis polynomials $L_i(x) is by calling them _Lagrange Coefficients_ defined for some constant $c$. They will usually be given some greek symbol such as $\lambda_i$ (_lambda_), with the subscript $i$ representing the $x$ value in the $(x, y)$ point which is being interpolated by that specific basis polynomial.
+A common way that modern academic papers will represent the basis polynomials $L_i(x)$ is by calling them _Lagrange Coefficients_ defined for some constant $c$. They will usually be given some greek symbol such as $\lambda_i$ (_lambda_), with the subscript $i$ representing the $x$ value in the $(x, y)$ point which is being interpolated by that specific basis polynomial.
 
 $$
 \begin{align}
