@@ -115,7 +115,8 @@ Individual shareholders don't know $s_0$, so we should try to substitute somethi
 $$
 \begin{align}
 s_0 &= \sum_{i \in S} \gamma^S_i z_i \\\\
-f'(x) &= \sum_{i \in S} \gamma^S_i z_i + \sum_{i \in S} \gamma^S_i \sum_{k = 1}^{t' - 1} a_{(i, k)} x^k \\\\
+f'(x) &= s_0 + \sum_{i \in S} \gamma^S_i \sum_{k = 1}^{t' - 1} a_{(i, k)} x^k \\\\
+      &= \sum_{i \in S} \gamma^S_i z_i + \sum_{i \in S} \gamma^S_i \sum_{k = 1}^{t' - 1} a_{(i, k)} x^k \\\\
       &= \sum_{i \in S} \gamma^S_i \left( z_i + \sum_{k = 1}^{t'-1} a_{(i, k)} x^k \right) \\\\
 \end{align}
 $$
@@ -198,7 +199,7 @@ $$
 
 $$
 \begin{align}
-g_j(i) \cdot G &= \sum_{k = 0}^{t-1} \phi_k i^k + \sum_{k = 1}^{t' - 1} A_{(j, k)} i^k \\\\
+g_j(i) \cdot G &= \sum_{k = 0}^{t-1} \phi_k j^k + \sum_{k = 1}^{t' - 1} A_{(j, k)} i^k \\\\
 &= f(j) \cdot G + \left( \sum_{k = 1}^{t' - 1} a_{(j, k)} i^k \right) G \\\\
 &= \left( z_j + \sum_{k = 1}^{t' - 1} a_{(j, k)} i^k \right) G \\\\
 &= g_j(i) \cdot G \\\\
