@@ -7,7 +7,7 @@ category: scriptless
 
 ## Intro
 
-In this document, I'll describe a protocol for a provably fair, non-custodial Bitcoin lottery in which players can pay into the jackpot using Lightning. If everyone cooperates, the winner can even receive their prize using Lightning too. This enables large scale federated lotteries with very low barriers to entry, and highly flexible ticketing systems, where 1 satoshi paid into the jackpot is literally equivalent to one ticket in the lottery. Players maintain total anonymity from one-another.
+In this document, I'll describe a protocol for a provably fair Bitcoin lottery in which players can pay into the jackpot using Lightning. If everyone cooperates, the winner can even receive their prize using Lightning too. This enables large scale federated lotteries with very low barriers to entry, and highly flexible ticketing systems, where 1 satoshi paid into the jackpot is literally equivalent to one ticket in the lottery. Players maintain total anonymity from one-another.
 
 The lottery's jackpot capital is backed on-chain by a _market maker._ The market maker is trusted, but verifiable: While the market maker _could_ choose to award the jackpot to the wrong player (collusion is possible), any other honest player can immediately recognize this misbehavior, and publish a non-interactive fraud proof to warn others.
 
