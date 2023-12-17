@@ -285,7 +285,7 @@ Technically yes, but the inviscription ciphertext could be broken up across mult
 
 ## Conclusion
 
-Besides the methods I've discussed here, there are probably countless other ways of obfuscating and revealing arbitrary data on the Bitcoin blockchain. They all invariably appear to be _vastly less efficient_ than what the [current inscriptions standard](https://docs.ordinals.com/inscriptions.html) uses, both in terms of computational workload and on-chain storage requirements.
+Besides the methods I've discussed here, there are probably countless other ways of obfuscating and revealing arbitrary data on the Bitcoin blockchain. They all invariably appear to be _vastly less efficient_ than what the [current inscriptions standard](https://docs.ordinals.com/inscriptions.html) uses, both in terms of computational workload and on-chain storage requirements. And ordinals themselves are infinitely less efficient than simply using [OpenTimestamps](https://opentimestamps.org/) to prove data provenance off-chain.
 
 If [Luke's PR](https://github.com/bitcoin/bitcoin/pull/28408) is merged, the most popular Bitcoin node implementation will no longer relay inscription transactions. Inscription users frustrated by this artificially-imposed barrier will, if pressed, seek out alternative inscription methods to bypass it. Inventive users will find the barrier to be a two-foot fence: easily bypassed by sacrificing efficiency.
 
