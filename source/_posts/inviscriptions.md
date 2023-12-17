@@ -51,7 +51,7 @@ The bitcoins are reclaimed by the owner, minus fees, and the arbitrary data (the
 
 I see this approach as pointless and inefficient for all its most common use cases.
 
-If the goal is to communicate and transfer ownership of a unique digital asset (a Non-Fungible Token), then one should instead defer to some authority or Oracle which certifies the unique ownership of that asset. That entity can publish an OpenTimestamped signature attesting to the ownership, or publish a signed transaction which includes a commitment to the new owner (e.g. using a Taproot-style commitment hash).
+If the goal is to communicate and transfer ownership of a unique digital asset (a Non-Fungible Token), then one should instead defer to some authority or Oracle which certifies the unique ownership of that asset. That entity can publish an [OpenTimestamped](https://opentimestamps.org/) signature attesting to the ownership, or publish a signed transaction which includes a commitment to the new owner (e.g. using a Taproot-style commitment hash).
 
 If the purpose of the inscription is to create a provenance anchor in time (e.g. to prove something existed before a certain time), then [OpenTimestamps](https://opentimestamps.org/) is a fast and zero-cost alternative - far simpler and with near zero on-chain footprint.
 
