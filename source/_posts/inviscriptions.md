@@ -237,7 +237,7 @@ However, the translator transaction's structure should be recognizable and stand
 
 <img src="/images/inviscriptions/tx-diagram.svg">
 
-## Detectability of the Reveal TX
+## Detectability of the Translator TX
 
 > But wait, if the translator transaction can be detected, couldn't it be censored?
 
