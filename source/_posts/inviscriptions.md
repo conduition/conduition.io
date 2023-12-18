@@ -247,6 +247,10 @@ The idea of inviscription is to use the ciphertext transaction's fungibility pro
 
 Bitcoin users opposed to inviscriptions _could_ try to filter/censor translator transactions, but by that time, _the damage is already done_ as far as block-space consumption and fee-market inflation. These are the primary motivators for the inscription filtering/censorship debate today. Thus, censoring translator transactions has no practical gain for the censoring parties beyond griefing the inscriber. This renders the practice far less appealing, and less likely to occur.
 
+Take street art as an analogy. Inscriptions are like graffiti, except permanent. Currently, vandals are painting buildings in broad daylight: Their progress is easy to observe, and thus easy to interrupt if we wanted to.
+
+However if we start to interrupt them too much, then the inscribers will just wait until dark, and paint in the shadows while we're asleep. We wake up and find their works were completed in secret, and by then, nobody can remove them. The damage is already done.
+
 Furthermore, even if _one_ translator transaction can be identified and effectively excluded from the blockchain, the ciphertext is already on-chain, so censoring nodes would need to ensure that _no other translator transactions_ for that inviscription ever make it onto the chain _in perpetuity,_ which is no small feat.
 
 And even then, the inscribing user can still publish their `translator` off-chain to reveal the inscription data, and prove they inscribed bitcoins with said data. It just won't be detectable by on-chain scanning alone.
