@@ -292,3 +292,5 @@ If [Luke's PR](https://github.com/bitcoin/bitcoin/pull/28408) is merged, the mos
 Instead of preempting foolish on-chain behavior, it is best to let foolish behavior run itself into the ground while the agents behind it waste their money. Numerous similar hype cycles have occurred in this industry, and they all end the same way: A slow fizzle out as everyone slowly but inevitably migrates to faster, more efficient, lower cost alternatives. I believe same will happen to inscriptions.
 
 We Bitcoiners just need to keep a cool head, avoid rushing into rash action, and let nature take its course.
+
+In the meantime, [join me on Github in my efforts to reduce the on-chain footprint](https://github.com/ordinals/ord/discussions/2879) of downstream apps and protocols which are causing this inscription debate in the first place.
