@@ -27,12 +27,10 @@ description: >-
 
   I maintain the [`secp`](https://crates.io/crates/secp) and [`musig2`](https://crates.io/crates/musig2)
   Rust crates, and love to contribute to cryptographic open source projects
-  which pique my interest.
-
-
-  Notice any errors in my work? Please let me know! 🧹
-  <a href="mailto:conduition@proton.me">Contact me by email</a> or
-  [suggest an edit on Github](https://github.com/conduition/conduition.io).
+  which pique my interest. I'm a part-time contributor to
+  [the `rust-bitcoin` ecosystem](https://github.com/rust-bitcoin/rust-bitcoin/pulls?q=is%3Apr+author%3Aconduition)
+  and to
+  [`electrs`](https://github.com/romanz/electrs/pulls?q=is%3Apr+author%3Aconduition).
 
   # Hiring
 
@@ -58,6 +56,12 @@ description: >-
   <a href="mailto:conduition@proton.me">Contact me by email</a> to discuss contract
   based consulting or development work payable in Bitcoin. I'll also consider
   long-term contracts or sponsorships depending on the subject matter.
+
+  # Corrections
+
+  Notice any errors in this blog? Please let me know! 🧹
+  <a href="mailto:conduition@proton.me">Contact me by email</a> or
+  [suggest an edit on Github](https://github.com/conduition/conduition.io).
 
 keywords: bitcoin scriptless smart contracts blockchain crypto cryptography lightning network
 author: Conduition
