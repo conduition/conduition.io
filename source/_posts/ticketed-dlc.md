@@ -49,7 +49,7 @@ Here's an example of a ticketed DLC with 3 players, Alice, Bob, and Carol, and a
 
 \* <sub>I'm using PTLCs in this example, but a <a href="#HTLCs-instead-of-PTLCs">very similar approach can be used if only HTLCs are available.</a></sub>
 
-<img src="/images/dlc-mm/contract.svg">
+<img src="/images/ticketed-dlc/contract.svg">
 
 1. The Market Maker sets up (but does not sign) $\text{TX}\_{\text{init}}$, which deposits the DLC's entire value $\hat{v}$ into a 4-of-4 multisig address. Control of this contract is shared between the Market Maker and the three players, but the on-chain source of the funds is the responsibility of the Market Maker.
 
