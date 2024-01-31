@@ -149,6 +149,7 @@ pagination_dir: page
 ## include:/exclude: options only apply to the 'source/' folder
 include:
   - .well-known/nostr.json
+  - apps/expo-wasm-demo/_expo/static/js/web/*
 exclude:
 ignore:
 
