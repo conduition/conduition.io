@@ -25,9 +25,9 @@ description: >-
 
   # My Work
 
-  I maintain the [`secp`](https://crates.io/crates/secp) and [`musig2`](https://crates.io/crates/musig2)
-  Rust crates, and love to contribute to cryptographic open source projects
-  which pique my interest. I'm a part-time contributor to
+  I maintain the [`secp`](https://crates.io/crates/secp), [`musig2`](https://crates.io/crates/musig2),
+  and [`qudoku`](https://crates.io/crates/qudoku) Rust crates, and I love to contribute to
+  cryptographic open source projects which pique my interest. I'm a part-time contributor to
   [the `rust-bitcoin` ecosystem](https://github.com/rust-bitcoin/rust-bitcoin/pulls?q=is%3Apr+author%3Aconduition)
   and to
   [`electrs`](https://github.com/romanz/electrs/pulls?q=is%3Apr+author%3Aconduition).
