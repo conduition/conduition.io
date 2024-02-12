@@ -298,7 +298,7 @@ Consider the set of resharing polynomials $\\{g_i(x)\\}\_{i \in S}$ each of degr
 
 $$ g_i(x) = z_i + \sum_{k = 1}^{t' - 1} a_{(i, k)} x^k $$
 
-If each the $t$ shareholders in $S$ distribute an evaluation of their resharing polynomials to every other shareholder in the group, then only a subset of $t'$ of those evaluations are needed to completely reconstruct every polynomial $\\{g_i(x)\\}\_{i \in S}$. This would allow one to reconstruct all $\\{g_i(0)\\}\_{i \in S} = \\{z_i\\}\_{i \in S}$. The resulting set of $t$ shares can then be used to reconstruct $f(0) = s_0$.
+If each of the $t$ shareholders in $S$ distribute an evaluation of their resharing polynomials to every other shareholder in the group, then only a subset of $t'$ of those evaluations are needed to completely reconstruct every polynomial $\\{g_i(x)\\}\_{i \in S}$. This would allow one to reconstruct all $\\{g_i(0)\\}\_{i \in S} = \\{z_i\\}\_{i \in S}$. The resulting set of $t$ shares can then be used to reconstruct $f(0) = s_0$.
 
 However, this would be inefficient if shareholders had to store those $t$ evaluations as their new share. We want shareholders to be able to _update_ their shares from $z_i$ to some new share $z_i'$ of the same size, without storing extra redundant data for every threshold change, in such a way that their shares are still fully valid under canonical Shamir secret sharing protocols.
 
