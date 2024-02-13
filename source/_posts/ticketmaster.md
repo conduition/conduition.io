@@ -2,7 +2,8 @@
 title: Reverse Engineering TicketMaster's Rotating Barcodes (SafeTix)
 date: 2024-02-04
 mathjax: true
-category: coding
+category: code
+permalink: /coding/ticketmaster/
 ---
 
 _"Screenshots won't get you in", but Chrome DevTools will._
