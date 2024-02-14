@@ -71,7 +71,7 @@ $$
 - Each $a_{(i,\ j)}$ denotes the random coefficient at index $j$ chosen by signer $i$.
 - $f_i(x)$ is the polynomial defined by these coefficients.
 
-Each signer then computes a _commitment polynomial_ $F_i(x)$, which is essential a public version of their secret keygen polynomial $f_i(x)$.
+Each signer then computes a _commitment polynomial_ $F_i(x)$, which is essentially a public version of their secret keygen polynomial $f_i(x)$.
 
 $$ \phi_{(i,\ j)} = a_{(i,\ j)} G $$
 $$
@@ -251,7 +251,48 @@ The main approach I considered when trying to attack this protocol was whether a
 
 Far be it from me to authoritatively declare whether this approach is secure or not. Intuitively it _feels_ secure, because I can't think of a way to attack it effectively with less than $t$ signers.
 
-But this is not a solid metric. These days, cryptographic security is best when it can be proven definitively under clear assumptions. I would love if those more experienced than myself could inspect this idea and possibly prove whether the approach is secure. For now, I think I call it quits and wrap this article up.
+But this is not a solid metric. These days, cryptographic security is best when it can be proven definitively under clear assumptions. I would love if those more experienced than myself could inspect this idea and possibly prove whether the approach is secure.
+
+## Use Cases
+
+If FROST BYOK is secure, what can you do with it? Well there's one thing it might be _very_ handy for.
+
+BYOK would allow us to build _hierarchical_ FROST groups _from the bottom-up,_ in the same way we can currently do with [MuSig key aggregation](/cryptography/musig/). A hierarchical FROST group is one where signing shares are themselves split among a threshold of "sub-signers". For example, this diagram illustrates a 2-of-3 multisig with nested subwallets, each of them a FROST wallet.
+
+
+```
+                            ┌───────────────────┐
+                            │                   │
+                            │ wallet A (2-of-3) │
+                            │                   │
+                            └─────────┬─────────┘
+                                      │
+                                      │
+            ┌─────────────────────────┼───────────────────────────────┐
+            │                         │                               │
+            │                         │                               │
+            │                         │                               │
+┌───────────┴──────────┐  ┌───────────┴──────────┐         ┌──────────┴───────────┐
+│                      │  │                      │         │                      │
+│ subwallet 1 (1-of-2) │  │ subwallet 2 (1-of-2) │         │ subwallet 3 (2-of-3) │
+│                      │  │                      │         │                      │
+└──────────┬───────────┘  └───────────┬──────────┘         └──────────┬───────────┘
+           │                          │                               │
+     ┌─────┴──────┐             ┌─────┴──────┐           ┌────────────┼────────────┐
+     │            │             │            │           │            │            │
+┌────┴────┐  ┌────┴────┐   ┌────┴────┐  ┌────┴────┐ ┌────┴────┐  ┌────┴────┐  ┌────┴────┐
+│signer 1A│  │signer 1B│   │signer 2A│  │signer 2B│ │signer 3A│  │signer 3B│  │signer 3C│
+└─────────┘  └─────────┘   └─────────┘  └─────────┘ └─────────┘  └─────────┘  └─────────┘
+     X                                                   X            X
+```
+
+If each of the signers marked with an `X` agreed to sign some data, then in theory they could trustlessly sign as the top-level `wallet A`. Signer 1A can sign as subwallet 1, while signers 3A and 3B can sign as subwallet 3.
+
+This is not anything new: Normal FROST signing shares from the DKG can be split into Shamir Secret Shares and distributed to new keyholders to form such a hierarchy. The signing protocol becomes more complicated, but it's completely doable. However, with standard FROST, participants must always generate a completely _fresh signing share_ when creating a new FROST group. Pre-existing FROST groups cannot join together trustlessly into a higher-order FROST hierarchy without abandoning their existing group keys.
+
+What's novel about this approach I described above is that BYOKing allows existing FROST or MuSig group keys to be composed into hierarchical FROST groups, albeit with an upper limit on the number of allowed BYOKs ($m \le t$).
+
+As to how this could be used in the real-world, I'm not sure. Perhaps BYOK could enable things like higher-order [Fedimints](https://fedimint.org/), to enable composing multiple Fedimint instances together into a _SuperMint™_.
 
 ## Contact
 
