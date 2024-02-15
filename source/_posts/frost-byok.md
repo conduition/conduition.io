@@ -46,7 +46,6 @@ Just so we're all on the same page:
 |$x \leftarrow \mathbb{Z}\_{q}$ | Sampling $x$ randomly from the set of integers modulo $q$. Note that we exclude zero when sampling. |
 | $x_i = ...\ \forall\ 1 \le i \le n$ | Define the set of all $x_i$ for every number $i$ in the range from $1$ to $n$. |
 | $[a, b]$ | Inclusive range notation, i.e. all numbers between $a$ and $b$ including $a$ and $b$. |
-| $(a, b)$ | Exclusive range notation, i.e. all numbers between $a$ and $b$ excluding $a$ and $b$. |
 | $A \cup B$ | The _union_ of sets $A$ and $B$. |
 
 # DKG Review
