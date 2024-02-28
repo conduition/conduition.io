@@ -101,7 +101,7 @@ logo:
   enabled: true
   width: 64
   height: 64
-  url: /images/lightning-bolt-192.png
+  url: /images/flash-circuit-512.png
   gravatar: false
   grayout: true
 
@@ -116,13 +116,13 @@ logo:
 #   - gravatar: whether to create a favicon from your Gravatar
 favicon:
   desktop:
-    url: /images/lightning-bolt-96.png
+    url: /images/flash-circuit-512.png
     gravatar: false
   android:
-    url: /images/lightning-bolt-192.png
+    url: /images/flash-circuit-192.png
     gravatar: false
   apple:
-    url: /images/apple-touch.png
+    url: /images/apple-touch-180.png
     gravatar: false
 
 manifest:
