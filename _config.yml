@@ -37,6 +37,8 @@ description: >-
   [the `rust-bitcoin` ecosystem](https://github.com/rust-bitcoin/rust-bitcoin/pulls?q=is%3Apr+author%3Aconduition)
   and to
   [`electrs`](https://github.com/romanz/electrs/pulls?q=is%3Apr+author%3Aconduition).
+  I invented the [Ticketed DLC protocol](https://github.com/conduition/dlctix), to scale
+  multi-party Discreet Log Contracts with Lightning.
 
   # Hiring
 
