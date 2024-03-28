@@ -23,6 +23,12 @@ description: >-
     - Profile: `nprofile1qqs0awzzutnzfj6cudj03a7txc7qxsrma9ge44yrym6337tkkd23qkg32nsh9`
     - NIP-05: `conduition@conduition.io`
 
+  Connect with my Lightning node:
+
+    - Pubkey: `0207ebfbf356bc761a74d2385b5978d88e37a1ea7e2ff30f9fed4813edee2052ba`
+    - Clearnet IP: `198.199.70.218:9735`
+    - TOR: `conduit4u4zsimbgvcatj6lyy36ot6k7w7bvbvivgwhbgzs7gfds7qad.onion:9735`
+
   # My Work
 
   I maintain the [`secp`](https://crates.io/crates/secp), [`musig2`](https://crates.io/crates/musig2),
