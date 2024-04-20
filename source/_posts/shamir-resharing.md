@@ -7,7 +7,9 @@ category: cryptography
 
 In my last article on [Shamir Secret Sharing](/cryptography/shamir/), I outlined the basics of Shamir Secret Sharing (SSS) and described how polynomial interpolation works. Then I described an _issuance_ protocol which adds new shareholders or recovers lost shares using multi-party computation practices. If you're not already familiar with Shamir Secret Sharing, I highly recommend reading that article first.
 
-This article will focus on a protocol called _resharing,_ which I first heard about in [this thesis by Mehrdad Nojoumian](https://uwspace.uwaterloo.ca/bitstream/handle/10012/6858/nojoumian_mehrdad.pdf?sequence=1#subsection.4.3.1). Resharing can be used to recompute new secret shares, optionally with a new threshold. In a Shamir secret sharing group with threshold $t$, resharing allows a group of $t$ or more shareholders to cycle their shares in such a way that old shares from before the resharing event and new shares from after it are not compatible with one another. This might sound undesirable, but there are many cases where a group of shareholders may want to invalidate someone else's share.
+This article will focus on a protocol called _secret resharing,_ which I first heard about in [this thesis by Mehrdad Nojoumian](https://uwspace.uwaterloo.ca/bitstream/handle/10012/6858/nojoumian_mehrdad.pdf?sequence=1#subsection.4.3.1).
+
+Resharing can be used to recompute new secret shares, optionally with a new threshold. In a Shamir secret sharing group with threshold $t$, resharing allows a group of $t$ or more shareholders to cycle their shares in such a way that old shares from before the resharing event and new shares from after it are not compatible with one another. This might sound undesirable, but there are many cases where a group of shareholders may want to invalidate someone else's share.
 
 For example, what if one share is accidentally exposed? If one share is public, the group's threshold has essentially decreased from $t$ to $t - 1$, beause that exposed share can now be assumed to be public knowledge. The bearer of the exposed share no longer has any weight in the group.
 
@@ -15,16 +17,9 @@ The group as a whole may wish to restore the security of their shares by revoke 
 
 Resharing also allows shareholders to change the threshold of their shares from $t$ to any new threshold $t'$. Shares created from the resharing protocol have the new threshold $t'$ needed to recover the original shared secret.
 
-All the above should be possible without any opportunity for adversarial shareholders to collude and corrupt the new shares, or learn anything about the secret.
+As an added bonus, the set of participants can be changed during a resharing session: The set of shareholders _before_ resharing can be different from the set of participants _after_ resharing. Any number of old shareholders can be removed and any number of new shareholders can be added.
 
-## Disclaimer
-
-**Don't implement this in a production environment!**
-
-I have only just recently learned about secret resharing. Although I have taken the time to explore it and understand it myself, I still need to do more reading of the cryptographic literature before I can confidently say I understand it 100%. Please take this article with a grain of salt. Always consult an expert before rolling your own crypto.
-
-I would much appreciate extra review on this concept and feedback about whether its security reduces to other proven schemes. If you have any input, please feel free to [send me an email](mailto:conduition@proton.me), or [submit a PR on Github to fix this article](https://github.com/conduition/conduition.io).
-
+We want our protocol to work in an operating environment where some of our peers may be malicious. The protocol must be _verifiable,_ so that adversarial shareholders cannot collude to corrupt the new shares, or learn anything about the group's secret. This is called _verifiable_ secret resharing, or VSR for short.
 
 ## Mission
 
@@ -32,7 +27,11 @@ A set of $t$ or more shareholders may wish to change the threshold of their grou
 
 If $t' = t$, then the resharing protocol should still work, but instead has the intended effect of simply rendering old shares unusable without changing the threshold.
 
-Here follows a re-sharing protocol with verifiable commitments which enables a set of $t$ shareholders to compute updated shares. Shareholders who are offline at the time must be able to receive asynchronous messages, otherwise their old shares won't be compatible with the new shares.
+The set of shareholders may also be changing. Some shareholder may be removed, and others introduced into the group.
+
+Here follows a resharing protocol with verifiable commitments which enables a set of $t$ or more shareholders to compute updated shares. Shareholders who are offline at the time must be able to receive asynchronous messages, otherwise their old shares won't be compatible with the new shares.
+
+A detailed explanation of VSR is given in [this paper by Wong, Wing, and Wang](https://apps.dtic.mil/sti/pdfs/ADA461227.pdf).
 
 ## Parameters
 
