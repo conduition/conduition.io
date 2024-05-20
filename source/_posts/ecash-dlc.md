@@ -335,6 +335,7 @@ Performance could be improved here in a transparent fashion, by sacrificing priv
 - The concept of locked Ecash could also be used to create crowd-funded multi-party payments in regular Ecash, not involving DLCs at all.
 - Perhaps there is a way cross-mint transfers over Lightning could be useful to this protocol.
 - Could the DLC oracles be incentivized using Ecash somehow?
+- How best to integrate [digit-decomposition events](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#digit-decomposition), where oracles provide more than one attestation secret per event?
 
 ## Conclusion
 
