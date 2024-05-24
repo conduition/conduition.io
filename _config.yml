@@ -39,7 +39,8 @@ description: >-
   and to
   [`electrs`](https://github.com/romanz/electrs/pulls?q=is%3Apr+author%3Aconduition).
   I invented the [Ticketed DLC protocol](https://github.com/conduition/dlctix), to scale
-  multi-party Discreet Log Contracts with Lightning.
+  multi-party Discreet Log Contracts with Lightning, and I was the first to propose [DLCs settled
+  with Chaumian Ecash](/cryptography/ecash-dlc).
 
   # Hiring
 
