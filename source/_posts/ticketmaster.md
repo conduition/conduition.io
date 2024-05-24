@@ -302,7 +302,7 @@ The only authoritative source I could find on this is [an obscure document on Ti
 >
 > 1. How often must the token be refreshed? You should refresh the token anytime a fan opens and views a ticket within your app and 20 hours prior to the event. If you are unable to refresh the token when the fan views the ticket at the gate, then the SDK would attempt to use the token refreshed 20 hours prior. The token should still be valid. You do not need to refresh the token every 20 hours.
 
-Based on this, it might be reasonable to assume the `rawToken` is only valid for a 20 hour period, which would mean you'd need to fetch the `rawToken` at most 20 hours before the event to be able to resell or transfer it without TicketMaster's permission. However, if all you want to do is save a ticket offline, this is more than adequate. I even built a little [Expo](https://expo.dev) app I call _TicketGimp_ which renders SafeTix barcodes if you give it a `token`.
+Based on this, it might be reasonable to assume the `rawToken` is only valid for a 20 hour period, which would mean you'd need to fetch the `rawToken` at most 20 hours before the event to be able to resell or transfer it without TicketMaster's permission. However, if all you want to do is save a ticket offline, this is more than adequate. I even built a little [Expo](https://expo.dev) app I call [_TicketGimp_](https://github.com/conduition/ticketgimp) which renders SafeTix barcodes if you give it a `token`.
 
 <img style="width: 300px;" src="/images/ticketmaster/ticketgimp.png">
 
