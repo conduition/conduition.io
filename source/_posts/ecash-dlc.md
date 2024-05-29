@@ -1,6 +1,6 @@
 ---
 title: Discreet Log Contracts with Ecash Notes
-date: 2024-04-19
+date: 2024-05-19
 mathjax: true
 category: cryptography
 ---
