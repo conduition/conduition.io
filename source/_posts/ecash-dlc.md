@@ -7,6 +7,10 @@ category: cryptography
 
 Today I'd like to describe a way to use [Chaumian Ecash](https://en.wikipedia.org/wiki/Ecash) to commit to a conditional payment using an Ecash mint as a blind but trusted intermediary.
 
+### Update 2024-05-29
+
+I have since submitted [a proposal to the Cashu spec](https://github.com/cashubtc/nuts/pull/128) which enables DLCs on Cashu mints. The protocol therein is based on the contents of this article.
+
 ## Prerequisite Knowledge
 
 - [Elliptic curve math basics](/cryptography/ecc-resources)
