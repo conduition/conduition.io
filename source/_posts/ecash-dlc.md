@@ -139,24 +139,17 @@ At a high-level:
 - Let $d_a$ be Alice's payout secret, with corresponding public payout hash $D_a = H(d_a)$.
 - Let $d_b$ be Bob's payout secret, with corresponding public payout hash $D_b = H(d_b)$.
 
-1. Alice samples three random blinding secrets (one for each of the three possible outcome points).
+1. Alice samples a random outcome blinding secret.
+
+$$ b \leftarrow \mathbb{Z}\_q $$
+
+She masks the outcome locking points with the blinding secret.
 
 $$
 \begin{align}
-b_1 &\leftarrow \mathbb{Z}\_q \\\\
-b_2 &\leftarrow \mathbb{Z}\_q \\\\
-b_3 &\leftarrow \mathbb{Z}\_q \\\\
-\end{align}
-$$
-
-
-She masks the outcome locking points with the blinding secrets.
-
-$$
-\begin{align}
-K_1' &= K_1 + b_1 G \\\\
-K_2' &= K_2 + b_2 G \\\\
-K_3' &= K_3 + b_3 G \\\\
+K_1' &= K_1 + b G \\\\
+K_2' &= K_2 + b G \\\\
+K_3' &= K_3 + b G \\\\
 \end{align}
 $$
 
@@ -165,11 +158,11 @@ This layer of blinding will obscure each $K_i$ from the mint, so that the mint c
 <details>
   <summary>Why can Alice do this without Bob's involvement?</summary>
 
-It might seem odd that Alice can generate the blinding secrets $\\{b_1, b_2, b_3\\}$ and perform the outcome blinding independently without input from Bob. Wouldn't this expose Bob to the possibility that Alice might maliciously choose these secrets in order to give her some advantage in resolving the DLC?
+It might seem odd that Alice can generate the blinding secret $b$ and perform the outcome blinding independently without input from Bob. Wouldn't this expose Bob to the possibility that Alice might maliciously choose these secrets in order to give her some advantage in resolving the DLC?
 
-Thankfully this is not possible, because in order to resolve the DLC with the mint, Alice must eventually learn the discrete log of some $K_i' = K_i + b_i G$, which implies knowledge of the discrete log of $K_i$ as well. Bob would detect any attempt to cheat at step 6, when he verifies the correct locking points were used to register the DLC.
+Thankfully this is not possible, because in order to resolve the DLC with the mint, Alice must eventually learn the discrete log of some $K_i' = K_i + b G$, which implies knowledge of the discrete log of $K_i$ as well. Bob would detect any attempt to cheat at step 6, when he verifies the correct locking points were used to register the DLC.
 
-There is also no privacy risk here, because Alice already has the ability to doxx her and Bob's wager details to the mint if she wanted. The sole purpose of the outcome blinding secrets is to obscure the subject of the DLC from the mint.
+There is also no privacy risk here, because Alice already has the ability to doxx her and Bob's wager details to the mint if she wanted. The sole purpose of the outcome blinding secret is to obscure the subject of the DLC from the mint. This is also why we can use a single secret instead of unique random secrets for each outcome.
 
 </details>
 
@@ -208,9 +201,9 @@ $$ T_t = (H'(t), P_t) $$
 
 This structure commits $\hat{T}$ to the set of locking points and payout structures in a way the mint can verify later, but without exposing any information until needed.
 
-5. Alice gives Bob the outcome blinding secrets $\\{b_1, b_2, b_3\\}$ and the merkle root hash $\hat{T}$.
+5. Alice gives Bob the outcome blinding secret $b$ and the merkle root hash $\hat{T}$.
 
-6. Bob re-computes the payout merkle root $\hat{T}$ independently using the oracle locking points, blinding secrets, and expected payout structures, just as Alice did.
+6. Bob re-computes the payout merkle root $\hat{T}$ independently using the oracle locking points, blinding secret, and expected payout structures, just as Alice did.
 
 Note that Bob _cannot_ simply verify the membership of the payout structures relevant only to Bob. Doing so would allow Alice to sneak in an extra branch for which she already knows the attestation secret. Bob must fully re-compute $\hat{T}$ to rule out that possibility.
 
@@ -248,9 +241,11 @@ If the root hash $\hat{T}$ isn't already registered, the mint registers this DLC
 
 Bob can use $\hat{T}$ as an identifier to look up the DLC registration with the mint. Bob should be able to verify once the DLC is registered. If Alice takes too long to register the DLC, Bob can swap out his (non-locked) Ecash notes with the mint, to revoke Alice's ability to register the DLC later.
 
+The mint could also create a publicly verifiable signature on $\hat{T}$ and give the signature to Alice, who can forward it to Bob to prove she did indeed register the DLC.
+
 12. At this point both Alice and Bob are confident that the DLC is locked-in. Once the oracle attestation secret $k_i$ is revealed, either party can use the attestation secret to compute the blinded attestation secret, i.e. the discrete log of $K_i'$:
 
-$$ k_i' = k_i + b_i $$
+$$ k_i' = k_i + b $$
 
 13. Bob can now claim winnings (if applicable) from the mint by submitting to the mint:
     - The merkle root hash $\hat{T}$ as an identifier
@@ -327,7 +322,7 @@ Claim verification at the settlement stage can be done in $O(\log n)$ time, agai
 
 For the DLC participants, the DLC setup process is more expensive, as computing $\hat{T}$ requires $O(n)$ curve addition/multiplication operations, plus an $O(n)$ number of hash operations. Each participant must compute $\hat{T}$ independently, and that work cannot be safely delegated.
 
-Performance could be improved here in a transparent fashion, by sacrificing privacy and allowing the final attestation secret $k_i$ to be revealed in-the-clear, without a blinding secret $b_i$ to mask it. This makes constructing $\hat{T}$ purely a hashing process with no elliptic curve operations involved (beyond initially computing the lockings points from the oracle announcement), and so would be much faster. This comes at the cost of potentially revealing the nature of the event the DLC was subscribed to.
+Performance could be improved here in a transparent fashion, by sacrificing privacy and allowing the final attestation secret $k_i$ to be revealed in-the-clear, without the blinding secret $b$ to mask it. This makes constructing $\hat{T}$ purely a hashing process with no elliptic curve operations involved (beyond initially computing the lockings points from the oracle announcement), and so would be much faster. This comes at the cost of potentially revealing the nature of the event the DLC was subscribed to.
 
 ## Future Improvements/Extensions
 
