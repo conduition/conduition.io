@@ -36,7 +36,7 @@ Just so we're all on the same page:
 
 An Ecash mint issues _Ecash notes_ in various denominations, which can be redeemed later at the mint for some fungible commodity or service (such as Bitcoin). This is conceptually very similar to the physical banks of ye olden days, which accepted deposits of some fungible asset like silver or gold, and issued _physical cash_ (paper notes or metal coins) of various denominations in return, which could be used to reclaim the equivalent amount of the physical asset.
 
-In the case of a Bitcoin-backed Ecash mint, the mint accepts Bitcoin deposits, and issues Ecash notes can be redeemed for Bitcoin at a future time, for as long as the mint remains solvent and operating.
+In the case of a Bitcoin-backed Ecash mint, the mint accepts Bitcoin deposits, and issues Ecash notes which can be redeemed for Bitcoin at a future time, for as long as the mint remains solvent and operating.
 
 The basic principles of an Ecash mint are:
 
