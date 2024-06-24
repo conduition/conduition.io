@@ -61,7 +61,7 @@ Here's an example of a ticketed DLC with 3 players, Alice, Bob, and Carol, and a
     - For each player (a 'winner') who receives money from the DLC outcome, we add an output to $\text{TX}\_{\text{split } i}$.
     - Each output in $\text{TX}\_{\text{split } i}$ pays to a 2-of-2 escrow contract jointly owned by a winning player and the Market Maker.
     - Spending from each output in $\text{TX}\_{\text{split } i}$, the Market Maker sets up two mutually exclusive transactions:
-      - $\text{TX}\_{\text{winner } i j}$, which pays to the sole control of player $j$ after a relative timelock of $\Delta$ blocks.
+      - $\text{TX}\_{\text{win } i j}$, which pays to the sole control of player $j$ after a relative timelock of $\Delta$ blocks.
       - $\text{TX}\_{\text{reclaim } i j}$, which pays to the sole control of the Market Maker after a relative timelock of $2 \Delta$ blocks.
 
 3. The Market Maker sends these unsigned transactions to the players, who reply with partial signatures. The players take no issue with signing, because the players haven't yet invested any money into the DLC; The Market Maker is frolicking about with their own capital at this stage.
@@ -70,9 +70,9 @@ Here's an example of a ticketed DLC with 3 players, Alice, Bob, and Carol, and a
 
 5. The Market Maker generates a set of secret tickets $\\{t_1, t_2, t_3\\}$ - one for each player. Each ticket has a public point $T_i = t_i \cdot G$, where $G$ is the secp256k1 base point.
 
-6. The Market Maker creates adaptor signatures on each $\text{TX}\_{\text{winner } i j}$ locked with the point $T_j$, so that the ticket for player $j$ is needed to decrypt $\text{TX}\_{\text{winner } i j}$ (the TX which pays out to player $j$). He also creates a set of adaptor signatures on each $\text{TX}\_{\text{split } i}$ locked with each potential winner's ticket. E.g. if Alice and Bob are winners in outcome 1, then $\text{TX}\_{\text{outcome } 1}$ could be published using _either_ Alice _or_ Bob's ticket secrets.
+6. The Market Maker creates adaptor signatures on each $\text{TX}\_{\text{win } i j}$ locked with the point $T_j$, so that the ticket for player $j$ is needed to decrypt $\text{TX}\_{\text{win } i j}$ (the TX which pays out to player $j$). He also creates a set of adaptor signatures on each $\text{TX}\_{\text{split } i}$ locked with each potential winner's ticket. E.g. if Alice and Bob are winners in outcome 1, then $\text{TX}\_{\text{outcome } 1}$ could be published using _either_ Alice _or_ Bob's ticket secrets.
 
-7. The Market Maker sends the encrypted signatures on all $\text{TX}\_{\text{outcome } i}$, $\text{TX}\_{\text{split } i}$, and $\text{TX}\_{\text{winner } i j}$ transactions to the players.
+7. The Market Maker sends the encrypted signatures on all $\text{TX}\_{\text{outcome } i}$, $\text{TX}\_{\text{split } i}$, and $\text{TX}\_{\text{win } i j}$ transactions to the players.
 
 8. The players verify and ACK the adaptor signatures.
 
@@ -80,7 +80,7 @@ Here's an example of a ticketed DLC with 3 players, Alice, Bob, and Carol, and a
 
 10. The Market Maker signs and publishes $\text{TX}\_{\text{init}}$.
 
-11. Once $\text{TX}\_{\text{init}}$ is confirmed, each player $j$ has an incentive to learn the ticket secret $t_j$ that encrypts $\text{TX}\_{\text{winner } i j}$. By learning $t_j$, the player can enforce $\text{TX}\_{\text{split } i}$ followed by $\text{TX}\_{\text{winner } i j}$ on-chain to claim winnings from any DLC outcome which pays to them. The Market Maker can sell each ticket secret $t_j$ to player $j$ using an off-chain point-time-lock contract. The price of the earlier fee from step 9 can optionally be factored into the ticket price.
+11. Once $\text{TX}\_{\text{init}}$ is confirmed, each player $j$ has an incentive to learn the ticket secret $t_j$ that encrypts $\text{TX}\_{\text{win } i j}$. By learning $t_j$, the player can enforce $\text{TX}\_{\text{split } i}$ followed by $\text{TX}\_{\text{win } i j}$ on-chain to claim winnings from any DLC outcome which pays to them. The Market Maker can sell each ticket secret $t_j$ to player $j$ using an off-chain point-time-lock contract. The price of the earlier fee from step 9 can optionally be factored into the ticket price.
 
 12. Once all tickets have been purchased, and the outcome signature $s_i$ is published by the oracle, then the Market Maker has several options to settle the on-chain contract with each winning player:
 
@@ -106,7 +106,7 @@ Here's an example of a ticketed DLC with 3 players, Alice, Bob, and Carol, and a
 
 Assuming a player can learn $s_i$ (the discrete log of $S_i$) from the oracle, then they can decrypt and publish $\text{TX}\_{\text{outcome } i}$ independently without the Market Maker's cooperation. However, by itself this is not useful to the player, because the market maker will use $\text{TX}\_{\text{reclaim } i j}$ to return the money to himself after its relative locktime of $2 \Delta$ blocks matures.
 
-If player $j$ knows their ticket $t_j$ as well as $s_i$, they can decrypt and publish $\text{TX}\_{\text{split } i}$ followed by $\text{TX}\_{\text{winner } i j}$ to claim their winnings independently (under outcome $i$). This is what makes tickets valuable and worth purchasing.
+If player $j$ knows their ticket $t_j$ as well as $s_i$, they can decrypt and publish $\text{TX}\_{\text{split } i}$ followed by $\text{TX}\_{\text{win } i j}$ to claim their winnings independently (under outcome $i$). This is what makes tickets valuable and worth purchasing.
 
 Nothing forces players to buy a ticket. A player could feign interest but abstain from actually purchasing a ticket. Players who abstain in this way will force the Market Maker into assuming their position in the DLC, creating counterparty risk.
 
@@ -129,7 +129,7 @@ If the Market Maker is unwilling to expose themselves to any counterparty risk, 
 
 ## HTLCs instead of PTLCs
 
-To support classic Lightning HTLCs available today, we simply rephrase the protocol such that the ticket secret $t_j$ is a preimage, and $T_j = H(t_j)$. Instead of adaptor signatures on each $\text{TX}\_{\text{winner } i j}$, we instead encumber the relevant output of $\text{TX}\_{\text{split } i}$ with an HTLC script or tapscript tree like this:
+To support classic Lightning HTLCs available today, we simply rephrase the protocol such that the ticket secret $t_j$ is a preimage, and $T_j = H(t_j)$. Instead of adaptor signatures on each $\text{TX}\_{\text{win } i j}$, we instead encumber the relevant output of $\text{TX}\_{\text{split } i}$ with an HTLC script or tapscript tree like this:
 
 ```
 <market_maker && P_j> OR
