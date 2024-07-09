@@ -250,10 +250,9 @@ To verify my interpretation, I installed `oathtool`, a TOTP command-line tool. I
 ```console
 $ sudo apt install oathtool -y
 ...
-$ date=$(python3 -c 'import datetime; print(datetime.datetime.fromtimestamp(1707074879).isoformat())')
-$ oathtool --totp --time-step-size 15s -N "$date" b3519364e0c7914c1f9d59d35652a04067d2f647
+$ oathtool --totp --time-step-size 15s -N "@1707074879" b3519364e0c7914c1f9d59d35652a04067d2f647
 492436
-$ oathtool --totp --time-step-size 15s -N "$date" b98432ed23b8f2bda82348216229f4d27ce9d063
+$ oathtool --totp --time-step-size 15s -N "@1707074879" b98432ed23b8f2bda82348216229f4d27ce9d063
 240860
 ```
 
