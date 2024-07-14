@@ -30,180 +30,20 @@ $ curl https://conduition.io/oracle/info
 }
 ```
 
-Cassandra has two upstream event sources: **Polymarket** and **CryptoCompare**.
+Cassandra has two upstream event sources: ~**Polymarket**~ and **CryptoCompare**.
 
-## Polymarket (Real World Events)
+## Update 2024-07-14
 
-Real-world event data is sourced upstream from [Polymarket](https://polymarket.com/), a prediction market on the Polygon blockchain. Each event has an enum of possible outcomes, as well as a '50/50' outcome which can indicate special 'tie-like' outcomes, such as a sports match being cancelled. Cassandra attests to these outcomes by signing the same outcome string which Polymarket resolves to. If the '50/50' outcome is resolved upstream, then Cassandra signs the string `"CASSANDRA ABORT"`.
+After witnessing the unreliable nature of the Polymarket API demonstrated to me over time, I have updated Cassandra to stop announcing new Polymarket events. Polymarket's API is too brittle to use as a source of truth on which to base contractually binding signatures on which to stake real money.
 
-Cassandra provides endpoints which return information about the markets themselves, announcements which commit the oracle to attesting, and the attestations eventually made by the oracle.
+- Events are often not resolved by their prescribed end date.
+- Some events' data is invalid for no obvious reason (missing important data fields).
+- Some events' outcomes and expected end dates are modified for no clear reason (which is illegal in a DLC protocol).
+- Their API is rate limited, which prevents Cassandra from fetching timely updates for the numerous markets she is expected to track.
 
-### `GET /events/polymarket`
+The description of Cassandra's Polymarket API has been removed in the interest of brevity. Existing announced polymarket events will be tracked and attested to, to the best of Cassandra's ability, but new polymarket events will not be announced. If you need to see the documentation for Cassandra's old Polymarket API, [here is a link to the now-removed API docs which are still viewable in my website's git history](https://github.com/conduition/conduition.io/blob/68be890d42d1936c8aab6a1b7c5a11544fe703d1/source/_posts/cassandra.md#polymarket-real-world-events).
 
-Return an array of all Polymarket market objects which Cassandra has announced for. Markets are sorted by end date.
-
-Example response data:
-
-```json
-[
-  {
-    "condition_id": "0x06e38641b524be1ed25563e2481ae310983b192973f3c7e37f7e06153d39935d",
-    "question": "Solana flips ETH in daily fees in May?",
-    "end_date_iso": "2024-05-31T00:00:00Z",
-    "tokens": [
-      {
-        "outcome": "Yes"
-      },
-      {
-        "outcome": "No"
-      }
-    ]
-  },
-  {
-    "condition_id": "0x087874fc4b347f997e9d13d8bfa169dd93bafe9f2c93d66add33df970b7c65e1",
-    "question": "Will Elon tweet between 75 and 84 times?",
-    "end_date_iso": "2024-05-31T00:00:00Z",
-    "tokens": [
-      {
-        "outcome": "Yes"
-      },
-      {
-        "outcome": "No"
-      }
-    ]
-  },
-  // ...
-]
-```
-
-By appending a query parameter `?status=resolved` or `?status=active`, the caller can opt to receive only resolved or active (unresolved) market information.
-
-```
-$ curl https://conduition.io/oracle/events/polymarket?status=resolved
-```
-```json
-[
-  {
-    "condition_id": "0x4dcd86e503db974a04da4ef751671e357ef9b96719c0e64861431048dd100d96",
-    "question": "Will Nikki Haley endorse Trump before June?",
-    "end_date_iso": "2024-05-31T00:00:00Z",
-    "game_start_time": "2024-05-26T13:15:00Z",
-    "tokens": [
-      {
-        "outcome": "Yes",
-        "winner": true
-      },
-      {
-        "outcome": "No"
-      }
-    ]
-  }
-]
-```
-
-The `condition_id` of each market acts as its unique identifier on Cassandra and also upstream on Polymarket. This can be used to fetch more complete information about the market from Cassandra, using the `GET /events/polymarket/:conditionID` endpoint, or to fetch the oracle announcement/attestation for this market.
-
-You can also verify the information provided by Cassandra by fetching the same market upstream from Polymarket's API.
-
-```
-$ curl https://clob.polymarket.com/markets/0x1fb007817ce2c45a8274968e7f0003245fb7645c120c601de4a37d34475487ec
-```
-
-To fetch the market info from Cassandra, use the following endpoint.
-
-### `GET /events/polymarket/:conditionID`
-
-Fetch detailed information about a single Polymarket market from Cassandra.
-
-Example:
-
-```
-$ curl https://conduition.io/oracle/events/polymarket/0x087874fc4b347f997e9d13d8bfa169dd93bafe9f2c93d66add33df970b7c65e1
-```
-```json
-{
-  "condition_id": "0x087874fc4b347f997e9d13d8bfa169dd93bafe9f2c93d66add33df970b7c65e1",
-  "question_id": "0xd87c8f10c2a71fda60792385a1b27047af670b4edd8ad78c8e020361dcb5d403",
-  "question": "Will Elon tweet between 75 and 84 times?",
-  "description": "If Elon Musk (@elonmusk), posts between 75 (inclusive) and 84 (inclusive) times on X between May 24, 2024, 12:00 PM ET (noon) and May 31, 2024, 12:00 PM ET this market will resolve to \"Yes\". Otherwise, this market will resolve to \"No\".\n\nFor the purposes of this market, only main feed posts, quote posts and reposts posts will count. \n\nReplies will NOT count towards the total - however, replies on the main feed such as https://x.com/elonmusk/status/1786073478711353576 will be counted by the tracker.\n\nDeleted posts will count as long as they remain available long enough to be captured by the tracker (~5 minutes). \n\nThe resolution source for this market is the ‘Post Counter’ figure for posts found at https://www.xtracker.io/. Individual posts can be viewed by clicking \"Export Data\". If the tracker does not update correctly in accordance with the rules, X itself may be used as a secondary resolution source. \n",
-  "image": "https://polymarket-upload.s3.us-east-2.amazonaws.com/how-many-times-will-elon-musk-tweet-between-april-25-and-may-2-4mCbpYfQLXTX.jpg",
-  "market_slug": "will-elon-tweet-between-75-and-84-times",
-  "end_date_iso": "2024-05-31T00:00:00Z",
-  "tokens": [
-    {
-      "outcome": "Yes"
-    },
-    {
-      "outcome": "No"
-    }
-  ]
-}
-```
-
-Note that for brevity we omit some of the less-relevant properties returned by Polymarket's API. We also omit zero-value properties (e.g. false).
-
-### `GET /announcements/polymarket/:conditionID`
-
-Fetch Cassandra's oracle announcement message for a specific Polymarket market.
-
-Example:
-
-```
-$ curl https://conduition.io/oracle/announcements/polymarket/0x087874fc4b347f997e9d13d8bfa169dd93bafe9f2c93d66add33df970b7c65e1
-```
-```json
-{
-  "announcement": {
-    "announcementSignature": "6124dca2c2b8a98c37da139c8f469b702f11ae0804cdfc5b5236b6052883c9be6c3bb9edfc99a38fec6b3d3e7c81885670b3f6b811f69ee611af877c1fabc03c",
-    "oraclePublicKey": "c3b1d269468f427ec56b4d0fa14c13aa4476fb05c708f8c3f036b97f839c2741",
-    "oracleEvent": {
-      "oracleNonces": [
-        "7c99949f3ed30e89a573153109714776eb1f7d7b813aa6c966a13f2798d8913c"
-      ],
-      "eventMaturityEpoch": 1717200000,
-      "eventDescriptor": {
-        "enumEvent": {
-          "outcomes": [
-            "Yes",
-            "No",
-            "CASSANDRA ABORT"
-          ]
-        }
-      },
-      "eventId": "polymarket-will-elon-tweet-between-75-and-84-times"
-    }
-  },
-  "serialized": "6124dca2c2b8a98c37da139c8f469b702f11ae0804cdfc5b5236b6052883c9be6c3bb9edfc99a38fec6b3d3e7c81885670b3f6b811f69ee611af877c1fabc03cc3b1d269468f427ec56b4d0fa14c13aa4476fb05c708f8c3f036b97f839c2741fdd8227600017c99949f3ed30e89a573153109714776eb1f7d7b813aa6c966a13f2798d8913c665a6480fdd80619000303596573024e6f0f43415353414e4452412041424f525432706f6c796d61726b65742d77696c6c2d656c6f6e2d74776565742d6265747765656e2d37352d616e642d38342d74696d6573"
-}
-```
-
-The `announcement` is a JSON representation of [the `oracle_announcement` message type, described here in the DLC specifications](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Messaging.md#the-oracle_announcement-type). Specifically Cassandra uses [the `dlc_messages` Rust crate to build announcements](https://docs.rs/dlc-messages/latest/dlc_messages/oracle_msgs/struct.OracleAnnouncement.html). The `serialized` field is a hex-encoded binary representation of the same announcement data.
-
-### `GET /attestations/polymarket/:conditionID`
-
-Fetch Cassandra's oracle attestation message for a specific Polymarket market. Naturally, the market must have resolved on Polymarket before Cassandra will create and store her attestation. Cassandra regularly (every 30 minutes or so) checks to see if any active Polymarket markets have resolved.
-
-Example:
-
-```
-$ curl https://conduition.io/oracle/attestations/polymarket/0x087874fc4b347f997e9d13d8bfa169dd93bafe9f2c93d66add33df970b7c65e1
-```
-```json
-{
-  "attestation": {
-    "oracle_public_key": "c3b1d269468f427ec56b4d0fa14c13aa4476fb05c708f8c3f036b97f839c2741",
-    "signatures": [
-      "7c99949f3ed30e89a573153109714776eb1f7d7b813aa6c966a13f2798d8913c8efad54ee92049c1b670fde617cfb61c2e5317aed1dd745a5720cef3cade1471"
-    ],
-    "outcomes": [
-      "No"
-    ]
-  },
-  "serialized": "c3b1d269468f427ec56b4d0fa14c13aa4476fb05c708f8c3f036b97f839c274100017c99949f3ed30e89a573153109714776eb1f7d7b813aa6c966a13f2798d8913c8efad54ee92049c1b670fde617cfb61c2e5317aed1dd745a5720cef3cade14710001024e6f"
-}
-```
-
-The `attestation` is a JSON representation of [the `oracle_attestation` message type, described here in the DLC specifications](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Messaging.md#the-oracle_attestation-type). Specifically Cassandra uses [the `dlc_messages` Rust crate to build attestations](https://docs.rs/dlc-messages/latest/dlc_messages/oracle_msgs/struct.OracleAttestation.html). The `serialized` field is a hex-encoded binary representation of the same attestation data.
+The CryptoCompare event source is working just fine.
 
 ## CryptoCompare (Pricing Data)
 
@@ -343,4 +183,4 @@ The `price` field is the raw price attested to, denominated in units of `currenc
 
 ## Disclaimer
 
-Cassandra runs and attests to outcomes without my personal supervision. Her data is sourced upstream from CryptoCompare and Polymarket's APIs. If those services return faulty or incorrect data, then Cassandra's attestations will also be faulty. You should consider Cassandra as a layer of interoperability that enables DLCs to be built from CryptoCompare/Polymarket data. Cassandra _does not_ independently validate that data.
+Cassandra runs and attests to outcomes without my personal supervision. Her data is sourced upstream APIs. If those services return faulty or incorrect data, then Cassandra's attestations will also be faulty. You should consider Cassandra as a layer of interoperability that enables DLCs to be built from upstream data sources. Cassandra _does not_ independently validate that data.
