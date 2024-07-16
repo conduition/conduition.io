@@ -30,6 +30,8 @@ description: >-
     - TOR: `conduit4u4zsimbgvcatj6lyy36ot6k7w7bvbvivgwhbgzs7gfds7qad.onion:9735`
     - Lightning Address: `conduition@conduition.io`
 
+  Subscribe using [RSS](/rss2.xml) or [Atom](/atom.xml) <img src="/images/rss.ico" style="height: 14px;">
+
   # My Work
 
   I maintain the [`secp`](https://crates.io/crates/secp), [`musig2`](https://crates.io/crates/musig2),
@@ -179,6 +181,24 @@ mathjax:
   extension_options: {}
     # you can put your extension options here
     # see http://docs.mathjax.org/en/latest/options/input/tex.html#tex-extension-options for more detail
+
+feed:
+  enable: true
+  type:
+    - atom
+    - rss2
+  path:
+    - atom.xml
+    - rss2.xml
+  limit: 0
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: /images/flash-circuit-512.png
+  autodiscovery: true
+  template:
 
 deploy:
   type: rsync

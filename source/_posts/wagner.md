@@ -3,6 +3,7 @@ title: Wagner's Birthday Attack - How to Break InsecureMuSig
 date: 2023-08-13
 mathjax: true
 category: cryptography
+description: An outlandish attack which broke the version version of the MuSig protocol.
 ---
 
 # Introduction

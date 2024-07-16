@@ -150,7 +150,7 @@ page_width: 54
 ##############################################################################
 
 # Enable or disable the RSS feed.
-rss: false
+rss:
 
 # Turn your web pages into graph objects (see http://ogp.me).
 open_graph:

@@ -3,6 +3,7 @@ title: Issuing New Shamir Secret Shares Using Multi-Party Computation
 date: 2023-09-04
 mathjax: true
 category: cryptography
+description: Safely add new members to a Shamir Secret Sharing group.
 ---
 
 Shamir's Secret Sharing (SSS) is a well known tool in the cryptography community. It is used in protocols like [SLIP39](https://github.com/satoshilabs/slips/blob/master/slip-0039.md) and [FROST](https://eprint.iacr.org/2020/852). SSS is popular because of its property of [information-theoretic security](https://en.wikipedia.org/wiki/Information-theoretic_security) (it is secure even against adversaries who have infinite computational power).

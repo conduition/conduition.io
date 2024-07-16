@@ -3,6 +3,7 @@ title: "Cassandra: My RESTful DLC Oracle API"
 date: 2024-06-02
 mathjax: true
 category: code
+description: API documentation for my automatic DLC oracle REST API.
 ---
 
 # Cassandra

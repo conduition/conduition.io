@@ -4,6 +4,7 @@ date: 2024-02-04
 mathjax: true
 category: code
 permalink: /coding/ticketmaster/
+description: "\"Screenshots won't get you in\", but Chrome DevTools will."
 ---
 
 _"Screenshots won't get you in", but Chrome DevTools will._

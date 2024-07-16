@@ -3,6 +3,7 @@ title: A Dive Into the Math Behind Bitcoin Schnorr Signatures
 date: 2023-06-23
 mathjax: true
 category: cryptography
+description: Get up close and personal with Schnorr and his now patent-free linear signature algorithm.
 ---
 
 # Introduction

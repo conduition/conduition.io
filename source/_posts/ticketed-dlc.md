@@ -3,6 +3,7 @@ title: Off-Chain Ticketing for Discreet Log Contracts
 date: 2024-01-04
 mathjax: true
 category: scriptless
+description: How to participate in a Bitcoin DLC without any on-chain transactions.
 ---
 
 <small>This post is an updated and ever-green duplicate of [my original email to the dlc-dev mailing list](https://mailmanlists.org/pipermail/dlc-dev/2023-November/000182.html) in November 2023. Also see [this post I made on DelvingBitcoin](https://delvingbitcoin.org/t/off-chain-dlc-ticketing-systems/214/3).

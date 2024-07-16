@@ -3,6 +3,7 @@ title: Inviscriptions - Undetectable Bitcoin Inscriptions
 date: 2023-12-13
 mathjax: true
 category: bitcoin
+description: Why filtering spam Bitcoin transactions is doomed to fail.
 ---
 
 [Bitcoin Ordinals & Inscriptions](https://docs.ordinals.com/introduction.html) are causing a rift in the Bitcoin community, between those who love them and those who hate them. Personally, I find them silly and anachronistic. But today, rather than attempting to argue one side or the other, I'd like to demonstrate why personal feelings, mine or yours, are irrelevant.

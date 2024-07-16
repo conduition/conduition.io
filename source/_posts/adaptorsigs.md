@@ -3,6 +3,7 @@ title: The Riddles of Adaptor Signatures
 date: 2023-09-08
 mathjax: true
 category: scriptless
+description: A detailed description of the math behind Schnorr Adaptor Signatures.
 ---
 
 One of the most powerful tricks unlocked by [Schnorr Signatures](/cryptography/schnorr/) is the concept of Adaptor Signatures. They are a quintessential building block of modern Bitcoin scriptless contract design, used in [off-chain payment channels](https://eprint.iacr.org/2020/476.pdf), [atomic swaps](https://github.com/BlockstreamResearch/scriptless-scripts/blob/master/md/atomic-swap.md), and [Discreet Log Contracts](https://suredbits.com/discreet-log-contracts-part-2-how-they-work-adaptor-version/).

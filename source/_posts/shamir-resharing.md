@@ -3,6 +3,7 @@ title: Resharing Shamir Secret Shares to Change the Threshold
 date: 2023-09-06
 mathjax: true
 category: cryptography
+description: Change the structure of a Shamir Secret Sharing group using some fancy multi-party computation tricks.
 ---
 
 In my last article on [Shamir Secret Sharing](/cryptography/shamir/), I outlined the basics of Shamir Secret Sharing (SSS) and described how polynomial interpolation works. Then I described an _issuance_ protocol which adds new shareholders or recovers lost shares using multi-party computation practices. If you're not already familiar with Shamir Secret Sharing, I highly recommend reading that article first.

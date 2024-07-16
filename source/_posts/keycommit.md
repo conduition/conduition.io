@@ -3,6 +3,7 @@ title: I'm Honest, I Swear! - Credible Threats of Private Key Exposure
 date: 2023-09-08
 mathjax: true
 category: scriptless
+description: How to make secret keys worth keeping secret.
 ---
 
 Smart contracts on Bitcoin are usually written with the assumption that all of the parties involved distrust one-another. Such contracts are written to have rigid enforceable execution paths. If one party deviates from the cooperative path, they must always do so to their own detriment. This creates an incentive for everyone to cooperate and behave honestly.

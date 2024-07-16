@@ -3,6 +3,7 @@ title: Discreet Log Contracts with Ecash Notes
 date: 2024-05-19
 mathjax: true
 category: cryptography
+description: Settling Bitcoin smart contracts instantly off-chain using a Chaumian Ecash mint as a trusted blind intermediary.
 ---
 
 Today I'd like to describe a way to use [Chaumian Ecash](https://en.wikipedia.org/wiki/Ecash) to commit to a conditional payment using an Ecash mint as a blind but trusted intermediary.

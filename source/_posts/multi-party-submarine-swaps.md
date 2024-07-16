@@ -3,6 +3,7 @@ title: Multi-Party Submarine Swaps
 date: 2024-07-12
 mathjax: true
 category: scriptless
+description: Scaling submarine swaps into a cooperative multi-party protocol for better efficiency.
 ---
 
 [Submarine swaps](https://docs.lightning.engineering/the-lightning-network/multihop-payments/understanding-submarine-swaps) allow lightning users to trustlessly swap between on-chain UTXOs and lightning balances. They're basically atomic swaps for the lightning network, and they're incredibly useful for Lightning node operators to balance their channels, among other things.
