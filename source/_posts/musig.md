@@ -45,6 +45,8 @@ $$
 
 # Rogue Keys
 
+The first and most obvious dragon we need to slay is the _Rogue Key Attack,_ [which I also introduced in my Schnorr Signatures article](/cryptography/schnorr/#HOWEVER).
+
 Let's return to Alice, Bob, and Carol in [my example from the Schnorr article](/cryptography/schnorr/#Naive-Example).
 
 Our alphabet friends all anticipate signing the same messages but they do not yet know each other's public keys. They don't trust each other to give their honest public keys. Nobody is willing to share their public key yet, because others might collude to contribute a rogue key which gives the malicious parties sole ownership of the final aggregated pubkey.
@@ -55,9 +57,7 @@ Our alphabet friends all anticipate signing the same messages but they do not ye
 | Bob   | $D_b$ | $d_b$ |
 | Carol | $D_c$ | $d_c$ |
 
-For example, Carol could wait for Alice and Bob to expose their public keys, and then declare hers as $D_c' = D_c - D_a - D_b$. After summing up all the public keys, Alice and Bob would compute an aggregated public key $D = D_c$, which gives sole to Carol.
-
-The first and most obvious dragon we need to slay is the _Rogue Key Attack,_ [which I also introduced in my Schnorr Signatures article](/cryptography/schnorr/#HOWEVER).
+For example, Carol could wait for Alice and Bob to expose their public keys, and then declare hers as $D_c' = D_c - D_a - D_b$. After summing up all the public keys, Alice and Bob would compute an aggregated public key $D = D_c$, which gives sole signing power to Carol.
 
 ## Option 1: KOSK
 
