@@ -1,15 +1,15 @@
 .PHONY: build
 build:
-	hexo generate
+	npx hexo generate
 
 .PHONY: deploy
 deploy: clean build
-	hexo deploy
+	npx hexo deploy
 
 .PHONY: server
 server:
-	hexo server --draft
+	npx hexo server --draft
 
 .PHONY: clean
 clean:
-	hexo clean
+	npx hexo clean
