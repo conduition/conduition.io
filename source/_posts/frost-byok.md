@@ -111,7 +111,7 @@ If there are $n$ signers in the group, then each signer receives $n$ evaluations
 
 Each evaluation must then be verified. Every signer has the full set of commitment polynomials, $\\{F_1(x), F_2(x), ... F_n(x)\\}$. Each polynomial commitment can be used to verify the evaluation given by its original sender.
 
-Let's say we're signer $i$, and we received an evaluation from signer $j$. This evaluations should be $f_j(i)$. We can verify it easily using $F_j(x)$ to assert the following statement.
+Let's say we're signer $i$, and we received an evaluation from signer $j$. This evaluation should be $f_j(i)$. We can verify it easily using $F_j(x)$ to assert the following statement.
 
 $$ F_j(i) = f_j(i) \cdot G $$
 
