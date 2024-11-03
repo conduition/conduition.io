@@ -34,7 +34,7 @@ You can build lots of cool stuff on top of this, but ultimately hash-locks are l
 
 However, these properties are often limited in scope because the preimage can only ever be provably linked with a single function: the SHA256 hash function.
 
-But if we permit ourselves to use zero-knowledge proofs (ZKPs), we can engineer _almost any property we want_ by proving arbitrary statements about the preimage itself.
+But if we permit ourselves to use zero-knowledge proofs (ZKPs), we can engineer _almost any property we want_ by proving arbitrary statements about the preimage itself. This idea is called [_Zero Knowledge Contingent Payments_](https://en.bitcoin.it/wiki/Zero_Knowledge_Contingent_Payment) (ZKCP), which was originally proposed by Greg Maxwell in 2011.
 
 ## Enter the ZKP
 
@@ -49,71 +49,55 @@ Zero-knowledge proof systems can generally be grouped into two categories: *STAR
 - STARK: "Zero-Knowledge **Scalable Transparent** Argument of Knowledge"
 - SNARK: "Zero-Knowledge **Succinct Non-interactive** Argument of Knowledge"
 
-|    Properties     |   ZK-STARKs   |       ZK-SNARKs      |
-|-------------------|---------------|----------------------|
-| Prover Speed      | Slow          | Slow                 |
-| Verifier Speed    | Fast          | Instant              |
-| Proof size        | 100s of bytes | 100s of **kilobytes**|
-| Quantum Resistant | Yes           | No                   |
-| Trusted Setup \*  | No            | Yes                  |
+|    Properties     |       ZK-STARKs       |       ZK-SNARKs      |
+|-------------------|-----------------------|----------------------|
+| Prover Speed      | Slow                  | Slow                 |
+| Verifier Speed    | Fast                  | Instant              |
+| Proof size        | 100s of **kilobytes** | 100s of bytes        |
+| Quantum Resistant | Yes                   | No                   |
+| Trusted Setup \*  | No                    | Yes                  |
 
-\* SNARKs require a "trusted setup ceremony", where one or more parties generate some public and private parameters needed to make the whole scheme work. They are then expected to publish the public parameters, and securely erase the private parameters, often called the "toxic waste". As long as at least one of the trusted parties does securely dispose of their toxic waste (private parameters) then the SNARK proofs generated with the corresponding set of <i>public</i> parameters should be sound.
+Most SNARKs require a "trusted setup ceremony", where one or more parties generate some public and private parameters needed to make the whole scheme work. They are then expected to publish the public parameters, and securely erase the private parameters, often called the "toxic waste". As long as at least one of the trusted parties does securely dispose of their toxic waste (private parameters) then the SNARK proofs generated with the corresponding set of _public_ parameters should be both sound and zero-knowledge.
 
-You might think that a "trusted setup ceremony" disqualifies ZK-SNARKs from applicability to a trustless environment like Bitcoin - But you're wrong. SNARKs can still be used in a **fully trustless** way in certain scenarios, including ours.
+You might think that the trusted setup ceremony could be done between a prover and verifier using multi-party computation, but [this paper](https://eprint.iacr.org/2019/964.pdf) claims this is not practical to do securely (it would take hours). This disqualifies trusted-setup zk-SNARKs from applicability to a trustless environment like Bitcoin.
 
-For a verifier to be confident that a SNARK proof is sound without trusting any third parties, they simply need to **participate in the setup ceremony themselves.** This way they can be certain that at least one set of private parameters were securely erased. If a ZK protocol has multiple verifiers, than every verifier needs to participate in the trusted setup. Any verifiers who *do not* participate could theoretically be defrauded by the verifiers who _did_ participate.
+ZK-STARKs do not have this requirement at all though: A STARK proof is fully *transparent,* requiring no trusted setup beyond agreement on the computation to be proven. As a bonus, they're also post-quantum-secure! On the down-side, STARK proofs are usually 10s or 100s of kilobytes large, compared to only a few hundred bytes for most SNARKs. Thankfully, these STARKs would not end up on-chain, and so their size is likely of minimal consequence for most ZKCP applications.
 
-ZK-STARKs do not have this requirement at all though: A STARK proof is fully *transparent,* requiring no trusted setup beyond agreement on the computation to be proven. As a bonus, they're also post-quantum-secure! On the down-side, STARK proofs are usually 10s or 100s of kilobytes large, compared to only a few hundred bytes for most SNARKs.
+As a result, we'll assume STARKs are used for the rest of this article, as they remove the potential dangers and headaches of SNARKs' trusted setup. There are some SNARK systems which have transparent setup - those could be used just as well, in place of STARKs.
 
 ## ZKP Abstraction
 
 In this article, I'm going to treat all ZKP systems as black boxes, without caring about their inner workings. If you want to know how zero-knowledge proofs work internally, break out your Google-Fu and dive down that rabbit hole - It goes pretty deep.
 
-Instead, I just care about the practical effect of a ZKP system used with Bitcoin Lightning, so I'm going to flatten all the SNARK/STARK systems (of which there are many) down to a generic set of three algorithms: **Setup**, **Prove**, and **Verify**.
-
-### Setup
-
-$$ \mathbf{Setup}(\text{Prog}) \rightarrow C $$
-
-The Setup algorithm takes in a *program* $\text{Prog}$, and outputs a *public parameters object* $C$ needed to run the Prove and Verify algorithms on $\text{Prog}$ later. I use the variable $C$ here because the public parameters are often referred to as a "Common Reference String" in the ZK lore.
-
-In the case of **SNARKs**, the $\mathbf{Setup}$ algorithm could be run by the verifier, who would give $C$ to the prover so that they can generate a proof that the verifier might accept as sound.
-
-In the case of **STARKs**, this algorithm is a no-op, and the public parameters object $C$ is null, so no communication round is needed.
+Instead, I just care about the practical effect of a ZKP system used with Bitcoin Lightning, so I'm going to flatten all the STARK systems (of which there are many) down to a generic set of two algorithms: **Prove**, and **Verify**.
 
 ### Prove
 
-$$ \mathbf{Prove}(\text{Prog}, C, s, P) \rightarrow Z $$
+$$ \mathbf{Prove}(\text{Prog}, s, P) \rightarrow Z $$
 
 The Prove algorithm takes in:
 
 - a *program* $\text{Prog}$
-- a set of *public parameters* $C$ (from the $\mathbf{Setup}$ algorithm)
 - *secret* input/output data $s$
 - *public* input/output data $P$
 
 ...and outputs a zero-knowledge proof object $Z$ provided $\text{Prog}$ can be executed with the given input/output data constraints.
 
-In the case of STARKs, $C$ is always null.
-
 Note how $s$ and $P$ aren't restricted to being _inputs_ to $\text{Prog}$. They can also be outputs. For example, I could prove I computed the $n$-th fibonacci number, without revealing the number itself. In this case $P = n$ is the public input, and $s = \text{Fib}(n)$ is the secret output.
 
 ### Verify
 
-$$ \mathbf{Verify}(\text{Prog}, C, Z, P) \rightarrow  \text{true/false} $$
+$$ \mathbf{Verify}(\text{Prog}, Z, P) \rightarrow  \text{true/false} $$
 
 The Verify algorithm takes in:
 
 - a *program* $\text{Prog}$
-- a set of *public parameters* $C$ (from the $\mathbf{Setup}$ algorithm)
 - a *zero-knowledge proof* $Z$
 - *public* input/output data $P$
 
 ...and outputs true if $Z$ correctly proves the program $\text{Prog}$ was executed with public input/output data $P$.
 
 The secret data $s$ used by the prover as input to (or output of) the program $\text{Prog}$ remains unknown to the verifier.
-
-In the case of STARKs, $C$ is always null.
 
 ## Example
 
@@ -144,11 +128,9 @@ def Prog(k: int) -> (bytes, PublicKey):
 
 The public output of $\text{Prog}$ is the hash $h$ and the pubkey $K$, and the computation steps in $\text{Prog}$ assert that both are computed from the same secret key $k$.
 
-If applicable, Bob generates the public parameters $C = \mathbf{Setup}(\text{Prog})$, and sends $C$ to the seller, Alice.
+Alice can compute a proof $Z = \mathbf{Prove}(\text{Prog}, k, (h, K))$ - i.e. proving she executed $\text{Prog}$ on secret input $k$ and got $(h, K)$ as the public output.
 
-Alice can compute a proof $Z = \mathbf{Prove}(\text{Prog}, C, k, (h, K))$ - i.e. proving she executed $\text{Prog}$ on secret input $k$ and got $(h, K)$ as the public output.
-
-Bob can run $\mathbf{Verify}(\text{Prog}, C, Z, (h, K))$ and if it outputs success, then Bob can be confident $h = \text{SHA256}(k)$ and $K = kG$ are related as Alice claimed.
+Bob can run $\mathbf{Verify}(\text{Prog}, Z, (h, K))$ and if it outputs success, then Bob can be confident $h = \text{SHA256}(k)$ and $K = kG$ are related as Alice claimed.
 
 In theory this works. There's just one small problem: Running secp256k1 point multiplication (`K = k * G`) inside a zero-knowledge proof compiler is **very** slow. I tested this exact approach with the [RISC0](https://github.com/risc0/risc0) STARK proof system, and it took **47 minutes** to prove the computation.
 
@@ -189,7 +171,7 @@ def Prog(secret_inputs: (int, int), public_input: int) -> (bytes, int):
 
 To compute a proof, Alice first samples a random nonce $r$ and computes $R = rG$. Then Alice computes the Schnorr challenge $e = \text{SHA256}(R, K)$. She isn't signing a specific message, so Alice can omit $m$ in the challenge hash. She takes these steps on her own, not in zero-knowledge - just regular computing so far.
 
-Next Alice computes $(h, s) = \text{Prog}((k, r), e)$ and generates a zero-knowledge proof $Z = \mathbf{Prove}(\text{Prog}, C, (k, r), (e, h, s))$ - i.e. proving she executed $\text{Prog}$ on secret inputs $(k, r)$ and public input $e$, which produced $(h, s)$ as the public output.
+Next Alice computes $(h, s) = \text{Prog}((k, r), e)$ and generates a zero-knowledge proof $Z = \mathbf{Prove}(\text{Prog}, (k, r), (e, h, s))$ - i.e. proving she executed $\text{Prog}$ on secret inputs $(k, r)$ and public input $e$, which produced $(h, s)$ as the public output.
 
 Alice packages together the Schnorr signature $(R, s)$ with the zero-knowledge proof $Z$, and sends $(Z, R, s)$ to Bob.
 
@@ -199,7 +181,7 @@ $$ sG = R + eK $$
 
 <sub><a href="/cryptography/schnorr/#Schnorr-Signatures">Click here for an explanation of why this proves knowledge of $k$</a></sub>
 
-If the Schnorr signature is valid, Bob runs $\mathbf{Verify}(\text{Prog}, C, Z, (e, h, s))$ to verify Alice's claim about the signature's relationship to $h$. If it outputs success, then Bob knows the Schnorr signature value $s$ was computed using $k$ (the preimage of $h$) as the secret key. He is then confident $h = \text{SHA256}(k)$ and $K = kG$ are related as Alice claimed.
+If the Schnorr signature is valid, Bob runs $\mathbf{Verify}(\text{Prog}, Z, (e, h, s))$ to verify Alice's claim about the signature's relationship to $h$. If it outputs success, then Bob knows the Schnorr signature value $s$ was computed using $k$ (the preimage of $h$) as the secret key. He is then confident $h = \text{SHA256}(k)$ and $K = kG$ are related as Alice claimed.
 
 This approach radically reduces our performance overhead. Instead of 47 minutes, this proof takes only about 3 minutes on my machine, and this could likely be optimized further with lower-level proof systems.
 
@@ -377,7 +359,7 @@ Avoiding ZKPs is the best general advice for Bitcoin protocol design, because ZK
 
 ## Resources
 
-For those interested in exploring real-world ZKP systems, I've appended a list of some well-known projects below.
+For those interested in exploring real-world ZKP systems, I've appended a list of some projects and resources below.
 
 ### STARK Systems
 
@@ -388,10 +370,13 @@ For those interested in exploring real-world ZKP systems, I've appended a list o
 - https://github.com/0xPolygonMiden/miden-vm
 - https://github.com/valida-xyz/valida
 - https://github.com/starkware-libs/cairo-lang
+- https://github.com/andrewmilson/ministark
+
 
 ### SNARK systems
 
 - https://github.com/ConsenSys/gnark
+- https://github.com/arkworks-rs
 - https://github.com/scipr-lab/libsnark
 - https://github.com/zkcrypto/bellman
 - https://github.com/Zokrates/ZoKrates
@@ -403,6 +388,14 @@ For those interested in exploring real-world ZKP systems, I've appended a list o
   - https://github.com/iden3/circom
   - https://github.com/iden3/snarkjs
   - https://github.com/iden3/rapidsnark
+
+### ZKCP Background
+
+- https://bitcoincore.org/en/2016/02/26/zero-knowledge-contingent-payments-announcement/
+- https://bitcointalk.org/index.php?topic=357263.0
+- https://bitcoinops.org/en/topics/acc/
+- https://freedom-to-tinker.com/2017/06/08/breaking-fixing-and-extending-zero-knowledge-contingent-payments/
+- https://dl.acm.org/doi/10.1145/3319535.3354234
 
 ### Other ZK Links
 
