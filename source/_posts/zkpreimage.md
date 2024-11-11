@@ -183,7 +183,7 @@ $$ sG = R + eK $$
 
 If the Schnorr signature is valid, Bob runs $\mathbf{Verify}(\text{Prog}, Z, (e, h, s))$ to verify Alice's claim about the signature's relationship to $h$. If it outputs success, then Bob knows the Schnorr signature value $s$ was computed using $k$ (the preimage of $h$) as the secret key. He is then confident $h = \text{SHA256}(k)$ and $K = kG$ are related as Alice claimed.
 
-This approach radically reduces our performance overhead. Instead of 47 minutes, this proof takes only about 3 minutes on my machine, and this could likely be optimized further with lower-level proof systems.
+This approach radically reduces our performance overhead. Instead of 47 minutes, this proof takes only about **20 seconds** on my machine, and this could likely be optimized further with lower-level proof systems.
 
 ## Pseudo-PTLCs
 
