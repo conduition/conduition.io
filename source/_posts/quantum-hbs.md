@@ -974,6 +974,10 @@ None of the above schemes matter unless it can be applied to build a real quantu
 
 I am not necessarily advocating to upgrade Bitcoin to use HBS in this particular way; I am merely trying to demonstrate what one possible *realistic* quantum resistance upgrade to Bitcoin _might_ look like, knowing what I know today. There are far smarter people than me also working on this problem, who will probably have much to say about the methods I describe here.
 
+## UPDATE 2024-12-16
+
+Speaking of smarter people than I, [Matt Corallo has kindly done us all the favor of making an even better design for a post-quantum upgrade](https://groups.google.com/g/bitcoindev/c/8O857bRSVV8) than my idea below (DASK). I would prefer his approach, but with a more succinct and simple hash-based signature scheme like WOTS or FORS. That said, I've left my original proposal below untouched outside this little update blurb.
+
 ## Digests as Secret Keys (DASK)
 
 Digests as Secret Keys (DASK) is my invented name (feat. a pronounceable acronym) for a hypothetical quantum-resistant upgrade path for Bitcoin. As far as I know, nobody else has proposed this idea before, but I would love to be proven wrong. Whether this idea is feasible or not, I would hope at least that I'm not alone.
