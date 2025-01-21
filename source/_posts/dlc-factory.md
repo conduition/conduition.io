@@ -92,6 +92,7 @@ There are several ways one could customize DLC Factories for specific use cases.
 - Absolute timelocks on the commitment transactions can be used to enforce an order of precedence, so that at any one time, only some commitment transactions can be broadcast. For instance, a DLC Factory might have a DLC for each day, and each DLC might have a commitment transaction which matures at 8:00AM, for an announcement which will mature at 11:00AM. If $\Delta = 1\text{h}$, this gives the participants a window from 8:00-10:00 AM in which they can publish their commitment transactions safely. If they publish after 10:00AM, their counterparty could use the punishment path to rob them.
 - Timelocks could be asymmetric between parties, so that one party can "lock-in" a DLC at certain times which the other can't. For instance, one party might be allowed to settle the DLC Factory at any time, while the other is only allowed to settle during weekday business hours.
 - The commitment TX output's punishment path could use a locktime instead of an attestation encumbrance, to bequeath the money to the counterparty if the commitment transaction is published after a certain absolute time. This might be useful if the oracle's attestation timing is highly reliable, and watchtower privacy is important, as it would give a watchtower no information about the DLC Factory except for its total value.
+- The commitment TX output could have an additional punishment path which uses a lightning-style revocation secret. This would allow the participants to manually revoke future commitment transactions, and thus enable renegotiation of future DLCs in the factory.
 - CETs could be asymmetric depending on who closes the factory. For instance, the closer's set of CETs might give them a slightly worse payout curve than the other party, to incentivize both parties to close the factory cooperatively rather than forcefully.
 - You could add an HTLC condition to the funding output script, which would allow a trustless transfer of ownership via an on-chain transaction, potentially allowing people to purchase a position in a DLC Factory using lightning (more research needed).
 
@@ -155,8 +156,7 @@ In a DLC Factory, a commitment transaction will typically be revoked _automatica
 | Time bombs | Will deadlock unless closed or updated | None; Contract is valid until closed or revoked |
 | Can pre-sign many DLCs? | Yes | No |
 | Early unilateral termination | Yes | No |
-| Arbitrary renegotiation | No | Yes |
-| When can renegotiation take effect? | After last commitment TX expires | At any time |
+| Arbitrary renegotiation | Optional | Yes |
 | Best for: | Perpetual interruptible contracts | Renewable fixed-term contracts |
 
 With a DLC Channel, you set up the channel, sign a single DLC, and now you have a unilateral exit option but _only_ for that specific DLC. Even if you were to try pre-signing a bunch of DLCs maturing at later dates, you need your channel partner to actively revoke those DLCs after they mature - Otherwise your peer could publish an outdated commitment TX and defraud you. You're forced to go on-chain early to head off that possibility.
