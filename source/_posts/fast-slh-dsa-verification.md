@@ -154,7 +154,7 @@ Recall also that we are measuring only one parameter set of SLH-DSA. An optimize
 
 ## Conclusion
 
-**Under heavy workload, a parallelized SLH-DSA-SHA2-128s verifier can perform as well as a single-threaded BIP340, but not as well as multi-threaded BIP340.**
+**Under heavy workload, a parallelized SLH-DSA-SHA2-128s verifier can perform as well as a single-threaded BIP340 verifier, but not as well as multi-threaded BIP340.**
 
 ## A Note on ML-DSA
 
