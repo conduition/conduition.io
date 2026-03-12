@@ -59,7 +59,7 @@ Signatures typically consist of a non-interactive zero-knowledge proof that the 
 
 To understand how signing works in the world of isogenies, we must learn about some curious results which mathematicians have discovered about isogenies. You'll have to take my word for now as we don't have the required background to fully prove them, but these facts have been proven and are well-known.
 
-1. Every isogeny has a _kernel,_ which is some finite set of points that the isogeny maps to infinity on its codomain (output curve). Isogenies can be almost-uniquely identified by their kernel, and the kernel itself can typically be represented efficiently using a pair of _torsion basis points_ (not going that deep yet).
+1. Every isogeny has a _kernel,_ which is some finite set of points that the isogeny maps to infinity on its codomain (output curve). Isogenies can be almost-uniquely identified by their kernel, and the kernel itself can typically be represented efficiently using a single _kernel generator point._
 1. Every isogeny $\varphi: E_1 \rightarrow E_2$ has a _dual_ $\widehat{\varphi} : E_2 \rightarrow E_1$ (denoted by a little hat), which you can think of as an inverse, though it's not exactly that. $\widehat{\varphi}$ can be efficiently computed knowing only $\varphi$.
 1. An isogeny $\alpha : E \rightarrow E$ from an elliptic curve $E$ back to itself is called an _endomorphism_. Any elliptic curve defined over a finite field has some finite (but very large) set of possible endomorphisms.
 1. The endomorphisms of an EC form a structured group, specifically a [_ring_](https://en.wikipedia.org/wiki/Ring_(mathematics)), if you compose and add them together (as polynomial functions). The endomorphism ring of a curve $E$ is denoted $\text{End}(E)$.
@@ -498,3 +498,4 @@ As we all know, those who invest in novel powerful technologies early take the m
 - https://math.mit.edu/classes/18.783/2019/LectureNotes5.pdf
 - https://cs-uob.github.io/COMSM0042/assets/pdf/Isogeny-based%20Cryptography_Advanced%20Cryptology.pdf
 - https://eprint.iacr.org/2023/671.pdf
+- https://eprint.iacr.org/2024/1071.pdf
