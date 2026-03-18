@@ -47,7 +47,7 @@ Isogeny-based cryptography (IBC) has the benefit of inheriting a cache of lingo 
 | **Classical ECC**  | Scalars modulo a prime | Points on a fixed curve  |
 | **Isogeny Crypto** | Isogenies | Entire elliptic curves |
 
-In IBC, we typically start with a well-known base elliptic curve $E_0$. To generate a keypair, a user would generate a secret isogeny $\varphi$ which maps points on $E_0$ to points on some other curve $E$. We write this more succinctly as:
+In IBC, we typically start with a well-known base elliptic curve $E_0$. To generate a keypair, a user would generate a secret isogeny $\varphi$ which maps points on $E_0$ to points on some other curve. We write this more succinctly as:
 
 $$ \varphi : E_0 \rightarrow E_{\text{pk}} $$
 
@@ -69,7 +69,7 @@ To understand how signing works in the world of isogenies, we must learn about s
     - Given curves $E_1$ and $E_2$ and their endomorphism rings $\text{End}(E_1)$, $\text{End}(E_2)$, we can efficiently compute an isogeny $\varphi : E_1 \rightarrow E_2$ (or $E_2 \rightarrow E_1$).
     - Given curves $E_1$ and $E_2$, one endomorphism ring $\text{End}(E_1)$ and an isogeny $\varphi : E_1 \rightarrow E_2$, we can efficiently compute the endomorphism ring $\text{End}(E_2)$.
 
-With a secret key $\varphi_\text{sk} : E_0 \rightarrow E_{\text{pk}}$, we can make use of our knowledge of $\text{End}(E_0)$ to compute $\text{End}(E_{\text{pk}})$. Now we have some new powers which nobody else in the universe, hopefully even quantum-enabled attackers, can do:
+With a secret key $\varphi : E_0 \rightarrow E_{\text{pk}}$, we can make use of our knowledge of $\text{End}(E_0)$ to compute $\text{End}(E_{\text{pk}})$. Now we have some new powers which nobody else in the universe, hopefully even quantum-enabled attackers, can do:
 
 - if given an isogeny $\phi_1: E_{\text{pk}} \rightarrow E'$, we can efficiently compute an isogeny $\psi_1: E_0 \rightarrow E'$
 - if given an isogeny $\phi_2: E_0 \rightarrow E'$, we can efficiently compute an isogeny $\psi_2: E_{\text{pk}} \rightarrow E'$
@@ -86,7 +86,7 @@ From here, knowing the basic rules of isogenies, maybe you can already see how a
 
 <img src="/images/isogenies/naive.svg">
 
-This results in very succinct keys and signatures. Keys are simply elliptic curves, which have very compact representations (as small as one scalar), and signatures are simply isogenies, which as I mentioned earlier can be compressed down to two elliptic curve points, which themselves can be compressed further if the isogeny has [_smooth_](https://en.wikipedia.org/wiki/Smooth_number) degree.
+This results in very succinct keys and signatures. Keys are simply elliptic curves, which have very compact representations (as small as one scalar), and signatures are simply isogenies, which as I mentioned earlier can be compressed down to individual points on a curve, which themselves can be compressed further if the isogeny has [_smooth_](https://en.wikipedia.org/wiki/Smooth_number) degree.
 
 Take care though, this naive scheme will be insecure. On one hand, yes, this procedure _does_ prove the signer knew $\varphi_{\text{sk}}$ - She would've never been able to compute $\text{End}(E_{\text{chl}})$ otherwise. In cryptographic parlance, the proof is _sound._
 
@@ -125,9 +125,9 @@ To compare other PQC schemes, see [Thom Wigger's PQC Zoo](https://pqshield.githu
 
 SQIsign fixes the naive scheme we drew up earlier by adding a couple extra steps to the signing algorithm:
 
-- Hash the public key curve $E_{\text{pk}}$ and a message $m$ to generate a pseudorandom _challenge_ isogeny $\phi_{\text{chl}}: E_{\text{pk}} \rightarrow E_{\text{chl}}$ which maps the public key to an arbitrary challenge curve $E_{\text{chl}}$
-- Use knowledge of $\text{End}(E_{\text{pk}})$ and $\phi_{\text{chl}}$ to compute the challenge curve's endomorphism ring $\text{End}(E_{\text{chl}})$
 - **Generate a random secret _commitment_ isogeny $\phi_{\text{com}} : E_0 \rightarrow E_{\text{com}}$ mapping $E_0$ to an arbitrary commitment curve $E_{\text{com}}$.**
+- Hash the public key curve $E_{\text{pk}}$, commitment $E_{\text{com}}$, and a message $m$ to generate a pseudorandom _challenge_ isogeny $\phi_{\text{chl}}: E_{\text{pk}} \rightarrow E_{\text{chl}}$ which maps the public key to an arbitrary challenge curve $E_{\text{chl}}$
+- Use knowledge of $\text{End}(E_{\text{pk}})$ and $\phi_{\text{chl}}$ to compute the challenge curve's endomorphism ring $\text{End}(E_{\text{chl}})$
 - **Use knowledge of $\text{End}(E_0)$ and $\phi_{\text{com}}$ to compute the commitment curve's endomorphism ring $\text{End}(E_{\text{com}})$**
 - Use knowledge of $\boldsymbol{\text{End}(E_{\text{com}})}$ and $\text{End}(E_{\text{chl}})$ to compute a _response_ isogeny $\phi_{\text{rsp}}: \boldsymbol{E_{\text{com}}} \rightarrow E_{\text{chl}}$
 - The signature is $\phi_{\text{rsp}}$. The verifier recomputes $\phi_{\text{chl}}: E_{\text{pk}} \rightarrow E_{\text{chl}}$ and checks that $\phi_{\text{rsp}}$ is indeed an isogeny mapping $\boldsymbol{E_{\text{com}}} \rightarrow E_{\text{chl}}$
@@ -154,7 +154,7 @@ SQIsign is awesome, but even its authors will admit the scheme is incredibly com
 
 _The PRISM authors note in [page 26 of their paper](https://eprint.iacr.org/2025/135) that signatures can be compressed even more (about 20%) using a pairing function (SQIsign does this), at the cost of extra complexity and slower performance._
 
-Like SQIsign, PRISM's secret key is also a secret isogeny $\varphi_\text{sk}: E_0 \rightarrow E_{\text{pk}}$. A PRISM signature is also an isogeny which only the holder of $\varphi_\text{sk}$ could've created. PRISM even uses the same finite field as SQIsign and borrows their key-generation algorithm. This compatibility curiously means that a SQIsign key can be used to create or verify PRISM signatures, and vice-versa.
+Like SQIsign, PRISM's secret key is also a secret isogeny $\varphi: E_0 \rightarrow E_{\text{pk}}$. A PRISM signature is also an isogeny which only the holder of $\varphi$ could've created. PRISM even uses the same finite field as SQIsign and borrows their key-generation algorithm. This compatibility curiously means that a SQIsign key can be used to create or verify PRISM signatures, and vice-versa.
 
 However PRISM uses an additional security assumption beyond those of SQIsign. SQIsign depends mainly on the supersingular isogeny path problem (and equivalently, the endomorphism ring problem). In addition to SIPP, PRISM also depends on the assumption that given a supersingular elliptic curve $E$ and a large prime $q$, it is hard to find an isogeny of _degree_ $q$ with domain (input curve) $E$.
 
@@ -177,7 +177,7 @@ $$ \deg(\varphi) = \max(\deg(g_1), \deg(h_1)) $$
 An isogeny's degree is also related to its _kernel,_ but let's leave that discussion for later.
 </details>
 
-We know this problem can be easily solved if you know $\text{End}(E)$. While the PRISM authors make decent arguments that finding prime-degree isogenies is likely hard without knowing $\text{End}(E)$, there is no rigorous reduction of this problem to the SIPP or ERP. A new assumption is necessary, and a new oracle must be instantiated for the security proof to work.
+We know this problem can be easily solved if you know $\text{End}(E)$. While the PRISM authors make decent arguments that finding prime-degree isogenies is likely hard without knowing $\text{End}(E)$, there is no rigorous reduction of this problem to the SIPP or ERP. A new assumption is necessary.
 
 Risks aside, if this assumption holds we can create a very simple hash-and-sign signature scheme.
 
@@ -189,6 +189,10 @@ Risks aside, if this assumption holds we can create a very simple hash-and-sign 
 <img src="/images/isogenies/prism.svg">
 
 This is much simpler to implement and reason with than SQIsign, but its security is clearly harder to prove conclusively. It is also a newer protocol, with [new attacks](https://eprint.iacr.org/2025/1602) always a possibility.
+
+Curiously, it just so happens that if producing prime-degree isogenies from an arbitrary curve were easy, _it would prove SQIsign secure_ because SQIsign assumes the existence of prime-degree isogeny oracles in their zero-knowledge security proofs. PRISM and SQIsign's security proofs are _complementary_ in this weird way, that if SQIsign is broken, this would prove no such oracles exist, and that PRISM's assumption is secure. Vice versa, if generating prime-degree isogenies were easy, PRISM would be broken but SQIsign would be proven secure. This gives us reason to expect that if either scheme is ever successfully attacked - without breaking ERP/SIPP - then we would suddenly be far more confident in the other scheme.
+
+I've heard one of PRISM's authors refer to this as "security by common belief" [in a talk](https://www.youtube.com/watch?v=YUMc5kOIACg). This doesn't necessarily mean that only one OR the other is secure. It's possible that both are secure, but no one knows how to prove it rigidly yet.
 
 Speaking of attacks...
 
@@ -321,7 +325,7 @@ Let $\varphi : E_0 \rightarrow E$ be a secret isogeny mapping the base curve $E_
 
 Let $\mathcal{H}(E, r)$ be a hash function which returns a uniformly random isogeny with domain (input curve) $E$.
 
-To rerandomize a public key curve $E$ - without knowing the secret key - given random salt $r$, we derive an isogeny $\psi = \mathcal{H}(E, r)$ which maps $E \rightarrow E'$ and use the codomain (output) curve $E'$ as the updated public key. Pretty simple.
+To rerandomize a public key curve $E$ - without knowing the secret key - given random salt $r$, we derive an isogeny $\psi = \mathcal{H}(E, r)$ which maps $E \rightarrow E'$ and use the codomain (output) curve $E'$ as the updated public key. Pretty simple. In fact, SQIsign does almost exactly this in its signing and verification fiat-shamir transform, every time we generate the challenge isogeny $\phi_\text{chl}$.
 
 To rerandomize the secret key isogeny $\varphi$ is more subtle. Given the salt $r$ we can rederive the isogeny $\psi = \mathcal{H}(E, r)$. Because we know our public key's endomorphism ring $\text{End}(E)$, and an isogeny $\psi: E \rightarrow E'$, we can compute $\text{End}(E')$. Knowing $\text{End}(E_0)$ by common knowledge as well, we can now find a secret isogeny $\varphi': E_0 \rightarrow E'$, which is our new secret key.
 
@@ -331,7 +335,7 @@ To rerandomize the secret key isogeny $\varphi$ is more subtle. Given the salt $
 
 Somewhat more concretely:
 
-- Define $KeyGen(\varphi) := \text{Codomain}(\varphi)$
+- Define $\text{KeyGen}(\varphi) := \text{Codomain}(\varphi)$
 - Define $\text{RerandomizePublic}(E, r)$:
     - Compute $\psi = \mathcal{H}(E, r): E \rightarrow E'$
     - Return $E' = \text{Codomain}(\psi)$
@@ -405,11 +409,13 @@ The merkle tree root $m$ can now be used to prove the UTXO was also committed to
 
 There are some complications though. There is no isogeny-based equivalent to the Nothing-Up-My-Sleeve (NUMS) points used by some taproot addresses to disable key-path spending. To date, nobody has yet found a transparent algorithm to generate a supersingular elliptic curve with an unknown endomorphism ring - a _NUMS curve._
 
-It's possible the Bitcoin community could do something similar to the [Perpetual Powers-of-Tau ceremony](https://github.com/privacy-ethereum/perpetualpowersoftau) run by the Ethereum community to produce some evolving set of semi-trustworthy canonical NUMS curves, which are occasionally committed to the blockchain via something like OpenTimestamps.
-
 If interested parties can interact, they could run [a multiparty protocol to generate a NUMS curve](https://eprint.iacr.org/2022/1469.pdf) by walking from a starting curve $E_0$ to some final curve $E_n$, each of the $n$ parties contributing one intermediate isogeny $\phi_i: E_{i - 1} \rightarrow E_i$ and - for security - a simple proof that they know $\phi_i$. Each party promises to forget their isogeny $\phi_i$ after the ceremony concludes.
 
 Any honest agent who participated in the setup ceremony should be confident the resulting curve is indeed unspendable, because if even one party did indeed honestly erase their contribution isogeny, then there is exists no known path from $E_0$ to $E_n$, and so $\text{End}(E_n)$ is also unknown. However, this protocol requires all interested parties to participate in the ceremony, even if asynchronously, which can be troublesome in practice.
+
+It's possible the Bitcoin community could do something similar to the [Perpetual Powers-of-Tau ceremony](https://github.com/privacy-ethereum/perpetualpowersoftau) run by the Ethereum community to produce some evolving set of semi-trustworthy canonical NUMS curves, which are occasionally committed to the blockchain via something like OpenTimestamps. Though ideally we'd prefer something more transparent and reproducible.
+
+[Here is a 2024 paper](https://academic.oup.com/comjnl/article/67/8/2702/7681095) which surveys various attempts to hash into random (NUMS) supersingular elliptic curves.
 
 ### Silent Payments
 
@@ -499,3 +505,4 @@ As we all know, those who invest in novel powerful technologies early take the m
 - https://cs-uob.github.io/COMSM0042/assets/pdf/Isogeny-based%20Cryptography_Advanced%20Cryptology.pdf
 - https://eprint.iacr.org/2023/671.pdf
 - https://eprint.iacr.org/2024/1071.pdf
+- https://www.mariascrs.com/2020/11/06/isogenies-for-crypto.html
