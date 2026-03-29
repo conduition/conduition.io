@@ -190,18 +190,18 @@ Unsurprisingly, the computational work for all operations is composed almost ent
 
 ### Initial Benchmark
 
-Without any optimizations, running single-threaded, this is how my SLH-DSA implementation fares benchmarked on my decently powerful desktop PC, running the `SLH-DSA-SHA2-128s` parameter set. I also compared my code against two other SLH-DSA codebases: [The RustCrypto team's implementation](https://github.com/RustCrypto/signatures/tree/master/slh-dsa), and [the PQCLean Project](https://github.com/PQClean/PQClean)'s "clean" implementation (more on that later).
+Without any optimizations, running single-threaded, this is how my SLH-DSA implementation fares benchmarked on my decently powerful desktop PC, running the `SLH-DSA-SHA2-128s` parameter set. I also compared my code against two other SLH-DSA codebases: [The RustCrypto team's implementation](https://github.com/RustCrypto/signatures/tree/master/slh-dsa), and [the _official_ SPHINCS+ team's own implementation](https://github.com/sphincs/sphincsplus), specifically their "clean" portable reference code.
 
-| Operation | My code | RustCrypto | PQClean |
+| Operation | My code | RustCrypto | Official |
 |:-:|:-:|:-:|:-:|
-| Keygen | 62 ms | 65 ms | 58 ms |
-| Signing | 470 ms | 494 ms | 438 ms |
-| Verification | 0.5 ms | 0.495 ms | 0.434 ms |
+| Keygen | 62 ms | 65 ms | 35 ms |
+| Signing | 470 ms | 494 ms | 251 ms |
+| Verification | 0.5 ms | 0.495 ms | 0.238 ms |
 
 
 - Times are listed in milliseconds.
 - RustCrypto `slh-dsa` was compiled with its SHA256 code switched to software mode only to give a fair representation of performance.
-- PQClean was compiled using `-O3 -march=native` to maximize performance.
+- Reference code was benchmarked using [their official benchmark script](https://github.com/sphincs/sphincsplus/blob/master/benchmark.py).
 
 At least this shows my implementation is not wildly inefficient right off the bat, but there is a lot of room for improvement especially in signing and keygen. Let's get cracking.
 
@@ -235,11 +235,11 @@ Note: This optimization is exclusive to the SHA2 parameter sets. SHAKE256 has an
 
 Otherwise though, this optimization is a massive and easy win. With essentially zero-cost and a factor-of-two speed improvement, this optimization is no-brainer. With this fact in mind, **all future benchmarks of my SLH-DSA code will be done with midstate caching enabled.**
 
-### Comparison to RustCrypto and PQClean
+### Comparison to RustCrypto and Official
 
-The PQClean "clean" implementation of SLH-DSA [also uses midstate caching](https://github.com/PQClean/PQClean/blob/2cc64716044832eea747234ddbffc06746ab815d/crypto_sign/sphincs-sha2-128s-simple/clean/thash_sha2_simple.c#L24-L25), but mysteriously does not perform nearly as well as mine does. I am having a hard time explaining why this is the case, and would welcome any contact from the PQClean team to better understand this discrepancy: It suggests that PQClean could potentially perform much better than it does currently.
+The official SPHINCS+ team's "clean" implementation of SLH-DSA [also uses midstate caching](https://github.com/sphincs/sphincsplus/blob/7ec789ace6874d875f4bb84cb61b81155398167e/ref/thash_sha2_simple.c#L32-L33), which explains why my code now performs comparably to theirs.
 
-As for the RustCrypto team's implementation of SLH-DSA, [they do not use midstate caching at all](https://github.com/RustCrypto/signatures/issues/1035), at least not at the time of writing.
+As for the RustCrypto team's implementation of SLH-DSA, [they do not use midstate caching at all](https://github.com/RustCrypto/signatures/issues/1035), at least not at the time of writing. This explains why their code remains much slower than either mine or the official implementation.
 
 ## XMSS Tree Caching
 
@@ -265,9 +265,9 @@ In practice, precomputing the root tree would be a preparatory step that an appl
 
 Since the root tree is recomputed for every signature, caching it is an easy win if we have the memory to spare. For future benchmarks, I will include cached-root-tree signing as a separate operation alongside standard (no cache) signing.
 
-### Comparison to RustCrypto and PQClean
+### Comparison to RustCrypto and Official
 
-Neither PQClean nor RustCrypto have implemented XMSS tree caching in their codebases.
+Neither the Official reference code nor RustCrypto have implemented XMSS tree caching in their codebases.
 
 ### Modifications
 
@@ -307,7 +307,7 @@ We can see the resulting speedup is about a factor 2.5x across the board.
 
 While highly effective, this optimization depends on a specific set of CPU instructions which are not universally available. Any code implementing SHA2 hardware acceleration is highly platform-specific by nature. And as you'll see later, for the specific case of SLH-DSA, SHA2 hardware acceleration is actually _less_ effective than other more general and ubiquitous x86 CPU instruction sets like [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), and unfortunately you cannot combine them (as far as I can tell).
 
-### Comparison to RustCrypto and PQClean
+### Comparison to RustCrypto and Official
 
 RustCrypto's SLH-DSA crate inherits SHA2 hardware acceleration from the auto-detecting capabilities of the `sha2` crate, which gives them the same \~2.5x performance boost on any machine with SHA2 native instructions.
 
@@ -319,7 +319,7 @@ Here is how RustCrypto's SLH-DSA implementation performs with and without hardwa
 | Signing | 495 ms | 178 ms |
 | Verification | 0.495 ms | 0.181 ms |
 
-PQClean has not implemented SHA2 hardware acceleration, but this is because they instead wrote a vectorized implementation of SLH-DSA using x86 AVX2 instructions, which runs faster and works on more machines. More on that soon.
+The SPHINCS+ team has not implemented SHA2 hardware acceleration in their reference code, but this is because they instead wrote a vectorized implementation of SLH-DSA using x86 AVX2 instructions, which runs faster and works on more machines. More on that soon.
 
 ### SHA3 Acceleration
 
@@ -375,9 +375,9 @@ The results are a remarkable improvement, showing the fastest signing and keygen
 | Signing (root tree cached) | 216 ms | 175 ms | 107 ms | 57 ms |
 | Verification | 0.257 ms | 0.242 ms | 0.234 ms | 0.233 ms |
 
-\* Note: I did not devote the time to implement vectorization for the verification algorithm, which is why we see so little change to the verification runtime when SIMD instructions are enabled. But PQClean did implement vectorized verification, and we'll see their performance results soon.
+\* Note: I did not devote the time to implement vectorization for the verification algorithm, which is why we see so little change to the verification runtime when SIMD instructions are enabled. But the SPHINCS+ team did implement vectorized verification, and we'll see their performance results soon.
 
-Vectorization is possible for SHA3 parameter sets, but it is much more efficient and much easier to write for SHA2. This is because SHA3 uses a more complex permutation function which acts on 3-d arrays of bits, whereas SHA2 operates on an array of simple 32-bit integers. As I do not have unlimited free time, I chose not to implement SHA3 vectorization. For the curious, [check out PQClean's SHA3 vectorization code](https://github.com/PQClean/PQClean/blob/2cc64716044832eea747234ddbffc06746ab815d/common/keccak4x/KeccakP-1600-times4-SIMD256.c).
+Vectorization is possible for SHA3 parameter sets, but it is much more efficient and much easier to write for SHA2. This is because SHA3 uses a more complex permutation function which acts on 3-d arrays of bits, whereas SHA2 operates on an array of simple 32-bit integers. As I do not have unlimited free time, I chose not to implement SHA3 vectorization. For the curious, [check out the reference implementation's SHA3 vectorization code](https://github.com/sphincs/sphincsplus/blob/7ec789ace6874d875f4bb84cb61b81155398167e/shake-avx2/keccak4x/KeccakP-1600-times4-SIMD256.c).
 
 Blessedly, vector instructions are available on almost every CPU these days. [The Steam hardware survey](https://store.steampowered.com/hwsurvey) is probably the most useful source of data available online to better understand the availability of these sorts of features, although it is obviously biased in that its data is sourced almost exclusively from gaming PCs.
 
@@ -389,23 +389,25 @@ In fact, SSE2 is so common today, [many x86 compilers auto-vectorize certain cod
 
 I couldn't find any data about ARM NEON's availability.
 
-### Comparison to RustCrypto and PQClean
+### Comparison to RustCrypto and Official
 
 RustCrypto's SLH-DSA crate does not implement vectorization at all.
 
-But PQClean does! They wrote a well-polished AVX2 implementation of SLH-DSA to complement their "clean" reference implementation - the one I benchmarked my code against at the start of all this. Unlike mine, their implementation uses [a generic vectorized SHA256 implementation](https://github.com/PQClean/PQClean/blob/2cc64716044832eea747234ddbffc06746ab815d/crypto_sign/sphincs-sha2-128s-simple/avx2/sha256avx.c) which makes their code much cleaner, but slightly less efficient at signing and keygen than my specialized implementation. On the flip side, this generic approach made it easy for them to implement vectorized SLH-DSA verification, which I did not implement.
+But the official reference code does! The SPHINCS+ team wrote a well-polished AVX2 implementation of SLH-DSA to complement their "clean" reference implementation - the one I benchmarked my code against at the start of all this. Unlike mine, their implementation uses [a generic vectorized SHA256 implementation](https://github.com/sphincs/sphincsplus/blob/7ec789ace6874d875f4bb84cb61b81155398167e/sha2-avx2/sha256avx.c) which makes their code much cleaner, but slightly less efficient at signing and keygen than my specialized implementation. On the flip side, this generic approach made it easy for them to implement vectorized SLH-DSA verification, which I did not implement.
 
-Here is how PQClean's AVX2 code compares against their unvectorized "clean" implementation:
+Here is how the SPHINCS+ team's AVX2 code compares against their unvectorized "clean" implementation:
 
-| Operation | PQClean | PQClean AVX2 |
+| Operation | Official | Official+AVX2 |
 |:-:|:-:|:-:|
-| Keygen | 58 ms | 12.3 ms |
-| Signing | 438 ms | 94 ms |
-| Verification | 0.434 ms | 0.161 ms |
+| Keygen | 35 ms | 10.9 ms |
+| Signing | 251 ms | 78 ms |
+| Verification | 0.238 ms | 0.138 ms |
+
+As you can see, my AVX2 signing and keygen code is marginally faster (around 15%), but since I did not implement vectorized verification, my verify algorithm is much slower.
 
 ## Multithreading
 
-SLH-DSA presents many opportunities for optimization through [parallelization](https://www.geeksforgeeks.org/operating-systems/difference-between-concurrency-and-parallelism/). As we've seen already, the Winternitz chains used for certification signatures consume the bulk SLH-DSA's runtime, and fortunately each Winternitz hash chain is completely independent of each other and can be computed in parallel.
+SLH-DSA presents many opportunities for optimization through [parallelization](https://www.geeksforgeeks.org/operating-systems/difference-between-concurrency-and-parallelism/). As we've seen already, the Winternitz chains used for certification signatures consume the bulk of SLH-DSA's runtime, and fortunately each Winternitz hash chain is completely independent of each other and can be computed in parallel.
 
 This implies the leaf nodes of each XMSS tree in an SLH-DSA key are _also_ independent. They can be computed in parallel across cores during keygen and signing. This further implies that each of the nodes in the merkle path of an XMSS signature can be computed in parallel.
 
@@ -417,11 +419,11 @@ The FORS signature on the actual message can also be computed in parallel with t
 
 I experimented with multithreading to parallelize SLH-DSA at these different levels in the algorithm, and compared the results using a machine with four CPU cores.
 
-First I tried parallelizing at the level of WOTS chains. I spun up four background workers whose sole job was to compute Winternitz chain tips given an input hash. However, it actually resulted in a 10-30% _increase_ in runtime.
+First I tried parallelizing at the level of WOTS chains. I spun up four background workers whose sole job was to compute Winternitz chain tips given an input hash. However, it actually resulted in a 10-30% _increase_ in runtime (slower).
 
 Profiling revealed that the inter-thread communication overhead nullified the runtime savings from parallelizing these hash chain computations. This was because each hash chain was only 16 iterations long in the NIST parameter sets, which only takes a few thousand nanoseconds on my machine. Each thread spent almost as much time communicating as it spent computing hashes.
 
-Next, I tried [parallelizing the computation of XMSS merkle nodes instead of WOTS hash chains](https://github.com/conduition/slh-experiments/commit/4a01b2bf42423cf299d501ee2349c5d7662f5608), specifically during signing. This resulted in very succinct code, and also gave better results across all parameter sets, featuring a \~40% runtime reduction compared to single-threaded code.
+Next, I tried [parallelizing the computation of XMSS merkle nodes instead of WOTS hash chains](https://github.com/conduition/slh-experiments/commit/4a01b2bf42423cf299d501ee2349c5d7662f5608), specifically during signing. This resulted in very succinct code, and also gave better results across all parameter sets, featuring a \~40% signing runtime reduction compared to single-threaded code.
 
 | Operation | Single Threaded | Multi Threaded | Multi Threaded + AVX2 |
 |:-:|:-:|:-:|:-:|
@@ -432,9 +434,9 @@ Next, I tried [parallelizing the computation of XMSS merkle nodes instead of WOT
 
 The down side is that this approach is limited to a certain maximum level of concurrency. Given SLH-DSA parameters $h$ and $d$, we can parallelize at most $h' = h/d$ merkle node computations. For succinct parameter sets, $h'$ is typically quite small, around 6 - 9. These days many machines have a dozen or more cores available. To achieve better performance with parallelism, we must parallelize at the level of individual XMSS leaves and across all layers of the hypertree. We'll see how to accomplish this in a moment.
 
-### Comparison to RustCrypto and PQClean
+### Comparison to RustCrypto and Official
 
-Neither RustCrypto nor PQClean implemented multithreading inside their code. Though one could use their libraries with multiple threads to produce distinct signatures or verify signatures in parallel, there is no way to use a CPU's spare available cores to speed up singular operations within these libraries.
+Neither RustCrypto nor the SPHINCS+ team implemented multithreading inside their code. Though one could use their libraries with multiple threads to produce distinct signatures or verify signatures in parallel, there is no way to use a CPU's spare available cores to speed up the latency of singular operations within these libraries.
 
 # Massive Parallelism
 
@@ -497,7 +499,7 @@ With this new code, the flamegraph now showed FORS tree computation on the CPU w
 
 Following this discovery, I turned my focus more explicitly towards learning and writing Vulkan. After a brief interlude [writing a Vulkan compute middleware library](https://github.com/conduition/libvkomp) in a vain attempt to make life easier, I came to see an unavoidable axiom of graphics programming: _Vulkan is hard,_ but it's also _awesomely powerful_ and the best way to exploit that power is to get your hands dirty.
 
-I set about writing an SLH-DSA implementation _entirely_ using Vulkan, with [GLSL](https://wikis.khronos.org/opengl/Core_Language_(GLSL)) compute shaders doing (almost) all the signing, keygen, and verification operations. I wrote the library in pure C to avoid the need for Rust FFI bindings on top of `libvulkan`. I designed the code with a multi-device architecture, allowing me to optionally load-balance the FORS and XMSS signing procedures across two devices, such as an integrated GPU with a CPU, or a discrete GPU plus an integrated GPU, and so forth.
+I set about writing an SLH-DSA implementation _entirely_ using Vulkan, with [GLSL](https://wikis.khronos.org/opengl/Core_Language_(GLSL)) compute shaders doing (almost) all the signing, keygen, and verification operations. I wrote the library in pure C to avoid the need for Rust FFI bindings on top of `libvulkan`. I designed the code with a multi-device architecture, allowing me to optionally load-balance the FORS and XMSS signing procedures across two devices, such as an integrated GPU with a CPU, or a discrete GPU plus an integrated GPU, etc.
 
 After about a month of work, [the code is finally ready and available here](https://github.com/conduition/slhvk). Documentation is still forthcoming, but [the Makefile](https://github.com/conduition/slhvk/blob/main/Makefile) is pretty self-explanatory. For now I have only tested this code on Linux but cross-platform compatibility contributions are very welcome!
 
@@ -541,7 +543,7 @@ There _are_ some scenarios - such as TLS handshakes - where you instead would pr
 
 Reducing latency and maximizing throughput are related but sometimes opposing goals. In the `slhvk` library, I aimed to maximize throughput for verification, and to minimize latency for signing. For keygen, I believe I managed to achieve both low-latency and high-throughput without sacrificing either one.
 
-To better illustrate this, here is the a benchmark comparing `slhvk` running with bulk verification and keygen operations, compared to running it repeatedly in sequence, without any batch parallelism.
+To better illustrate this, here is a benchmark comparing `slhvk` running with bulk verification and keygen operations, compared to running it repeatedly in sequence, without any batch parallelism.
 
 | Operation | `slhvk` (CPU) No Batch | `slhvk` (CPU) Batched |
 |:-:|:-:|:-:|
@@ -550,7 +552,7 @@ To better illustrate this, here is the a benchmark comparing `slhvk` running wit
 
 As you can see, without batching, the overhead caused by using Vulkan compute shaders actually results in a noticeable slowdown in verification latency, so much so that we would've been better off using naive single-threaded code.
 
-While it is possible to make a Vulkan compute pipeline to minimize SLH-DSA verification latency, this was not a goal for me personally, so I did not pursue it. Due to Vulkan's overhead, it seems likely that CPU-bound AVX2 vectorization or SHA2 hardware acceleration will provide much lower single-input latency than parallelized Vulkan code ever could, and with less implementation complexity to boot. But for verifying many signatures in bulk, compute shaders are where its at. Especially if you have...
+While it is possible to make a Vulkan compute pipeline to minimize SLH-DSA verification latency, this was not a goal for me personally, so I did not pursue it. Due to Vulkan's overhead, it seems likely that CPU-bound AVX2 vectorization or SHA2 hardware acceleration will provide much lower single-input latency than parallelized Vulkan code ever could, and with less implementation complexity to boot. But for verifying many signatures in bulk, compute shaders are where it's at. Especially if you have...
 
 ## GPUs
 
@@ -601,12 +603,12 @@ We've come a long way from the original naive implementation we were benchmarkin
 <!--
   Made with: https://graphmaker.org/bar-graph/
   labels:
-    Vulkan+GPU,Vulkan+CPU,AVX2+Multithread,AVX2,SSE2+Multithread,SHA-NI,PQClean+AVX2,SSE2,Multithread,Custom-soft,PQClean
+    Vulkan+GPU,Vulkan+CPU,AVX2+Multithread,AVX2,SSE2+Multithread,SHA-NI,Official+AVX2,SSE2,Multithread,Custom-soft,Official
   data:
     keygen:
-      0.16,1,8.75,8.75,16.3,11.6,12.3,16,32,26,58
+      0.16,1,8.75,8.75,16.3,11.6,10.9,16,32,26,35
     signing:
-      2.61,12.2,37.2,66,68.7,88,94,124,133,201,438
+      2.61,12.2,37.2,66,68.7,88,78,124,133,201,251
     signing (cached):
       2.48,10.5,32.2,57,60.1,77,0,107,118,175,0
 -->
@@ -615,9 +617,9 @@ We've come a long way from the original naive implementation we were benchmarkin
 <!--
   Made with: https://graphmaker.org/bar-graph/
   labels:
-    Vulkan+GPU,Vulkan+CPU,SHA-NI,PQClean+AVX2,Custom-soft,PQClean
+    Vulkan+GPU,Vulkan+CPU,SHA-NI,Official+AVX2,Custom-soft,Official
   data:
-    11800,16000,89000,161000,242000,434000
+    11800,16000,89000,138000,242000,238000
 -->
 <img style="border-radius: 8px;" src="/images/slh-dsa/verification-chart.svg">
 
@@ -647,7 +649,7 @@ There remain some unanswered questions I hope to investigate in the future:
 
 - What are the security ramifications of storing sensitive secret key data in Vulkan device buffers? Can Vulkan's device-local memory be protected against side-channel or memory-dumping attacks?
 - Can my shaders be better optimized to improve signing or verification performance even further?
-- Does the source code language of a shader make a meaningful performance impact in the resultant shader code? My current set of shaders are all written in GLSL, but there are other shading languages like [HLSL](https://en.wikipedia.org/wiki/High-Level_Shader_Language), or [Slang](https://shader-slang.org/), which may (or may not) compile into more efficient machine code.
+- Does the source code language of a shader make a meaningful performance impact in the resultant shader code? My current set of shaders are all written in GLSL, but there are other shading languages like [HLSL](https://en.wikipedia.org/wiki/High-Level_Shader_Language), or [Slang](https://shader-slang.org/), which may or may not compile into more efficient machine code.
 - To what extent can SLH-DSA verification latency be improved by breaking the algorithm up into smaller shaders?
 - How does `slhvk` bulk verification compare against simple multi-threaded verification, especially when combined with hardware instructions like AVX2 or SHA-NI?
 - How do we optimize the Vulkan shader compilation process to reduce program startup time? (e.g. caching, scoped contexts)
@@ -655,11 +657,3 @@ There remain some unanswered questions I hope to investigate in the future:
 - What are the performance effects of load-balancing bulk keygen/verification across multiple devices?
 - How effective is Vulkan at parallelizing the SHA3 parameter sets? How does it compare to SHA3 hardware acceleration?
 - How do ML-DSA and other post-quantum signature schemes fare when parallelized in a similar way? Does massive parallelization with Vulkan make SLH-DSA more competitive in the post-quantum landscape, or is it a rising tide that raises all ships?
-
-## Next Time
-
-Every optimization I've shown in this article has been totally compliant with [the NIST FIPS-205 specification](https://csrc.nist.gov/pubs/fips/205/ipd)... But my next writeup on this subject will dive into optimizations which would break FIPS-205 compatibility.
-
-Can significant performance gains be realized if we are willing to deviate from the FIPS specification? Can we make SLH-DSA signatures smaller? How small, exactly?
-
-More to come...
