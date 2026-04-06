@@ -38,6 +38,15 @@ description: >-
 
   # My Work
 
+  My current focus is post-quantum cryptography.
+  [My research into parallelism](/code/fast-slh-dsa/)
+  produced [`slhvk`](https://github.com/conduition/slhvk): the fastest CPU implementation of
+  [SPHINCS/SLH-DSA](https://csrc.nist.gov/pubs/fips/205/ipd) available anywhere.
+  I was the first to [suggest using isogeny-based cryptography to realize post-quantum
+  replacements for BIP32](/cryptography/isogenies-intro/) and other Bitcoin-adjacent
+  cryptographic techniques.
+
+
   I maintain the [`secp`](https://crates.io/crates/secp), [`musig2`](https://crates.io/crates/musig2),
   and [`qudoku`](https://crates.io/crates/qudoku) Rust crates, and I love to contribute to
   cryptographic open source projects which pique my interest. I'm a part-time contributor to
@@ -45,8 +54,12 @@ description: >-
   and to
   [`electrs`](https://github.com/romanz/electrs/pulls?q=is%3Apr+author%3Aconduition).
   I invented the [Ticketed DLC protocol](https://github.com/conduition/dlctix), to scale
-  multi-party Discreet Log Contracts with Lightning, and I was the first to propose [DLCs settled
-  with Chaumian Ecash](/cryptography/ecash-dlc).
+  multi-party Discreet Log Contracts with Lightning.
+
+
+  Outside the world of Bitcoin, I also [made the news](https://www.404media.co/ticketmaster-used-revolving-barcodes-to-control-ticket-resale-market-and-surveil-customers-doj-alleges/)
+  by [reverse-engineering TicketMaster's SafeTix barcode technology](/coding/ticketmaster/).
+
 
   # Hiring
 
