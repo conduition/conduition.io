@@ -16,6 +16,8 @@ The one problem with the techniques I used in my experiments is that _the best o
 
 This article demonstrates a hacky algorithmic trick I call _hypertree pruning_ which SLH-DSA signer implementations can use to electively reduce a key's signature use limit in exchange for better signing and/or keygen performance.
 
+<div style="background-color: rgba(100, 100, 155, 0.2); padding: 16px; border-radius: 5px;">If you prefer a powerpoint-presentation style of learning, check out <a href="https://www.youtube.com/watch?v=y2JQO17LgHk">this recording</a> of a talk I gave during the Ethereum Foundation's weekly PQ discussion call.</div>
+
 **Hypertree pruning _does not_ affect verifier compatibility:** Signatures produced by anyone using this trick will still verify correctly using the vanilla, standardized SLH-DSA verification algorithm - Although, they _are_ statistically distinguishable, and so hypertree pruning is noticeable to anyone observing multiple signatures over time from the same keypair.
 
 The security trade-off can be parameterized to favor signing or keygen performance improvement, and the intensity of the trade-off may be tuned based on the number of signatures each keypair is expected to make over its lifetime.
