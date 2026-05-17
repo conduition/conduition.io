@@ -6,7 +6,9 @@ category: code
 description: Performance research and benchmarks of optimizations to SLH-DSA (SPHINCS+)
 ---
 
-For the past few months, I have been tinkering with the NIST-approved post-quantum signature algorithm now called [SLH-DSA](https://csrc.nist.gov/pubs/fips/205/ipd), or "stateless hash-based digital signature algorithm", formerly called SPHINCS+. SLH-DSA is known for its conservatism: The only cryptographic assumption you need is that your hash function is one-way, which makes it great as a backup in case the novel mathematical assumptions underlying more cutting edge cryptosystems, like ML-DSA, turn out to be wrong.
+For the past few months, I have been tinkering with the NIST-approved post-quantum signature algorithm now called [SLH-DSA](https://csrc.nist.gov/pubs/fips/205/ipd), or "stateless hash-based digital signature algorithm", formerly called SPHINCS+. SLH-DSA is known for its conservatism: The only cryptographic assumption you need is that you have a secure hash function<sup>\*</sup> which makes it great as a backup in case the novel mathematical assumptions underlying more cutting edge cryptosystems, like ML-DSA, turn out to be wrong.
+
+<sub>\* technically, you need a property called "multi-target collision resistance".</sub>
 
 However, if implemented naively, SLH-DSA is also very slow and its signatures are very large. So I have been experimenting with various performance optimizations, with the goal of minimizing the signature size and cranking up its signing, verification, and key-generation speed.
 
