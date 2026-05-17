@@ -457,7 +457,7 @@ Another thing to note is that SQIsign has malleable signatures:
 >
 > \- [SQIsign NIST submission](https://sqisign.org/spec/sqisign-20250707.pdf), page 93
 
-I believe the same is true of PRISM, because PRISM signatures are also represented with a two-dimensional isogeny for compactness.
+The same is true of PRISM, because PRISM signatures are also represented with a two-dimensional isogeny for compactness. Unlike SQIsign however, [PRISM can be modified to achieve strong unforgeability](https://eprint.iacr.org/2026/443.pdf).
 
 However, this should not affect 2nd-layer protocols like Lightning, because these days signatures are included only in witness data, which does not affect TXID computation.
 
