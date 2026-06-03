@@ -44,7 +44,7 @@ description: >-
   [SPHINCS/SLH-DSA](https://csrc.nist.gov/pubs/fips/205/ipd) available anywhere.
   I was the first to [suggest using isogeny-based cryptography to realize post-quantum
   replacements for BIP32](/cryptography/isogenies-intro/) and other Bitcoin-adjacent
-  cryptographic techniques.
+  cryptographic techniques. This work is funded by [Brink](https://brink.dev).
 
 
   I maintain the [`secp`](https://crates.io/crates/secp), [`musig2`](https://crates.io/crates/musig2),
@@ -82,9 +82,13 @@ description: >-
   protocols which others take for granted.
 
 
-  <a href="mailto:conduition@proton.me">Contact me by email</a> to discuss contract
+  <s><a href="mailto:conduition@proton.me">Contact me by email</a> to discuss contract
   based consulting or development work payable in Bitcoin. I'll also consider
-  long-term contracts or sponsorships depending on the subject matter.
+  long-term contracts or sponsorships depending on the subject matter.</s>
+
+
+  [I now am being sponsored by Brink](/bitcoin/my-first-grant/) and so my full-time
+  focus is taken by my sponsored work applying post-quantum cryptography to Bitcoin.
 
   # Corrections
 
