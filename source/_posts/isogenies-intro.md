@@ -363,7 +363,9 @@ This technique has been described in a couple of papers such as [this one](https
 
 Proving unlinkability would be a matter of proving that $\text{RerandomizePublic}(E, r)$ results in an updated curve $E'$ which is indistinguishable from a uniform random distribution of supersingular elliptic curves. The details will start mattering more here, such as the degree of the isogenies used. While I am not a cryptographer, I believe this is an easy proof if you use facts from supersingular isogeny graph theory. SQIsign already proves similar facts around the distribution of challenge curves. Proving unforgeability would depend on the signature scheme you choose.
 
-Still given this technique's novelty and relative obscurity in the literature, there is work to be done proving security before this can be relied upon in the real-world. The lack of available implementations means we cannot assess performance. All this is open future work.
+~Still given this technique's novelty and relative obscurity in the literature, there is work to be done proving security before this can be relied upon in the real-world. The lack of available implementations means we cannot assess performance. All this is open future work.~
+
+UPDATE 2026-06-09: Some well-respected isogeny researchers have since published [a paper which formalizes and proves the techniques I described earlier to be secure](https://eprint.iacr.org/2026/1169).
 
 ## Examples
 
