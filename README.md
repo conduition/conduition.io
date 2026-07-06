@@ -1,4 +1,4 @@
-<img width="96" src="./source/images/flash-circuit-512.png">
+<img width="96" src="./source/images/flash-circuit.svg">
 
 # conduition.io
 
