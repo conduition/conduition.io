@@ -29,6 +29,7 @@ Some examples of known Knowledge Asymmetries on Bitcoin include:
 
 - Public keys for hashed address types like P2PKH which haven't been published before Q-day.
 - Parent BIP32 xprivs used to derive account-level keys, e.g. an xpriv at key path `m/44'/0'`.
+- Parent BIP32 xpubs used to derive address-level keys, e.g. an xpub at key path `m/44'/0'/0'`.
 - Taproot internal keys.
 - MuSig key aggregation contexts.
 
