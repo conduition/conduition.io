@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="770" viewBox="0 0 980 770" font-family="Helvetica, Arial, sans-serif">
+  <!-- background -->
+  <rect x="0" y="0" width="980" height="770" fill="#2b2d31"/>
+
+  <!-- ===================== defs ===================== -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#9aa0a6"/>
+    </marker>
+  </defs>
+
+  <!-- title -->
+  <text x="490" y="34" text-anchor="middle" fill="#f0f0f0" font-size="22" font-weight="bold">
+    Commitment Merkle Tree
+  </text>
+
+  <!-- ===================== connecting lines ===================== -->
+  <g stroke="#9aa0a6" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <!-- root -> tx -->
+    <line x1="490" y1="188" x2="490" y2="150"/>
+    <!-- internal -> root -->
+    <line x1="250" y1="330" x2="455" y2="252"/>
+    <line x1="730" y1="330" x2="525" y2="252"/>
+    <!-- leaves -> internal -->
+    <line x1="130" y1="452" x2="228" y2="376"/>
+    <line x1="370" y1="452" x2="272" y2="376"/>
+    <line x1="610" y1="452" x2="708" y2="376"/>
+    <line x1="850" y1="452" x2="752" y2="376"/>
+    <!-- inputs -> leaves -->
+    <line x1="130" y1="628" x2="130" y2="518"/>
+    <line x1="370" y1="628" x2="370" y2="518"/>
+    <line x1="610" y1="628" x2="610" y2="518"/>
+    <line x1="850" y1="628" x2="850" y2="518"/>
+  </g>
+
+  <!-- ===================== Bitcoin transaction / OP_RETURN ===================== -->
+  <rect x="300" y="66" width="380" height="82" rx="8"
+        fill="#3a3320" stroke="#f7931a" stroke-width="2"/>
+  <circle cx="330" cy="96" r="13" fill="#f7931a"/>
+  <text x="330" y="102" text-anchor="middle" fill="#2b2d31" font-size="16" font-weight="bold">₿</text>
+  <text x="356" y="92" fill="#f7931a" font-size="15" font-weight="bold">Bitcoin Transaction</text>
+  <text x="356" y="112" fill="#e8e8e8" font-size="13" font-family="monospace">
+    e.g. OP_RETURN &lt;root_hash&gt;
+  </text>
+  <text x="356" y="130" fill="#9aa0a6" font-size="11">
+    provable, timestamped on-chain
+  </text>
+
+  <!-- ===================== Merkle root ===================== -->
+  <rect x="395" y="192" width="190" height="58" rx="8"
+        fill="#243b3b" stroke="#4dd0c8" stroke-width="2"/>
+  <text x="490" y="216" text-anchor="middle" fill="#4dd0c8" font-size="14" font-weight="bold">Merkle Root</text>
+  <text x="490" y="238" text-anchor="middle" fill="#e8e8e8" font-size="13" font-family="monospace">H( H01 , H23 )</text>
+
+  <!-- ===================== internal nodes ===================== -->
+  <g font-family="monospace">
+    <rect x="175" y="332" width="150" height="48" rx="8" fill="#2f3540" stroke="#8ab4f8" stroke-width="2"/>
+    <text x="250" y="352" text-anchor="middle" fill="#8ab4f8" font-size="12">H01</text>
+    <text x="250" y="370" text-anchor="middle" fill="#e8e8e8" font-size="12">H( L0 , L1 )</text>
+
+    <rect x="655" y="332" width="150" height="48" rx="8" fill="#2f3540" stroke="#8ab4f8" stroke-width="2"/>
+    <text x="730" y="352" text-anchor="middle" fill="#8ab4f8" font-size="12">H23</text>
+    <text x="730" y="370" text-anchor="middle" fill="#e8e8e8" font-size="12">H( L2 , L3 )</text>
+  </g>
+
+  <!-- ===================== leaves (commitments) ===================== -->
+  <g font-family="monospace">
+    <!-- leaf 0 -->
+    <rect x="45"  y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
+    <text x="130" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L0</text>
+    <text x="130" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₀), m₀ )</text>
+    <!-- leaf 1 -->
+    <rect x="285" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
+    <text x="370" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L1</text>
+    <text x="370" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₁), m₁ )</text>
+    <!-- leaf 2 -->
+    <rect x="525" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
+    <text x="610" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L2</text>
+    <text x="610" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₂), m₂ )</text>
+    <!-- leaf 3 -->
+    <rect x="765" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
+    <text x="850" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L3</text>
+    <text x="850" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₃), m₃ )</text>
+  </g>
+
+  <!-- ===================== user inputs ===================== -->
+  <g font-family="monospace">
+    <rect x="45"  y="630" width="170" height="70" rx="8" fill="#26302a" stroke="#81c995" stroke-width="2"/>
+    <text x="130" y="652" text-anchor="middle" fill="#81c995" font-size="12" font-weight="bold">User A</text>
+    <text x="130" y="672" text-anchor="middle" fill="#e8e8e8" font-size="12">witness w₀</text>
+    <text x="130" y="690" text-anchor="middle" fill="#e8e8e8" font-size="12">message m₀</text>
+
+    <rect x="285" y="630" width="170" height="70" rx="8" fill="#26302a" stroke="#81c995" stroke-width="2"/>
+    <text x="370" y="652" text-anchor="middle" fill="#81c995" font-size="12" font-weight="bold">User B</text>
+    <text x="370" y="672" text-anchor="middle" fill="#e8e8e8" font-size="12">witness w₁</text>
+    <text x="370" y="690" text-anchor="middle" fill="#e8e8e8" font-size="12">message m₁</text>
+
+    <rect x="525" y="630" width="170" height="70" rx="8" fill="#26302a" stroke="#81c995" stroke-width="2"/>
+    <text x="610" y="652" text-anchor="middle" fill="#81c995" font-size="12" font-weight="bold">User C</text>
+    <text x="610" y="672" text-anchor="middle" fill="#e8e8e8" font-size="12">witness w₂</text>
+    <text x="610" y="690" text-anchor="middle" fill="#e8e8e8" font-size="12">message m₂</text>
+
+    <rect x="765" y="630" width="170" height="70" rx="8" fill="#26302a" stroke="#81c995" stroke-width="2"/>
+    <text x="850" y="652" text-anchor="middle" fill="#81c995" font-size="12" font-weight="bold">User D</text>
+    <text x="850" y="672" text-anchor="middle" fill="#e8e8e8" font-size="12">witness w₃</text>
+    <text x="850" y="690" text-anchor="middle" fill="#e8e8e8" font-size="12">message m₃</text>
+  </g>
+
+  <!-- ===================== legend ===================== -->
+  <g font-size="12">
+    <rect x="30" y="726" width="14" height="14" rx="3" fill="#26302a" stroke="#81c995" stroke-width="2"/>
+    <text x="52" y="738" fill="#c9ccd1">User input (secret + message)</text>
+    <rect x="270" y="726" width="14" height="14" rx="3" fill="#333044" stroke="#c58af9" stroke-width="2"/>
+    <text x="292" y="738" fill="#c9ccd1">Leaf commitment</text>
+    <rect x="450" y="726" width="14" height="14" rx="3" fill="#2f3540" stroke="#8ab4f8" stroke-width="2"/>
+    <text x="472" y="738" fill="#c9ccd1">Internal hash</text>
+    <rect x="610" y="726" width="14" height="14" rx="3" fill="#243b3b" stroke="#4dd0c8" stroke-width="2"/>
+    <text x="632" y="738" fill="#c9ccd1">Root</text>
+    <rect x="720" y="726" width="14" height="14" rx="3" fill="#3a3320" stroke="#f7931a" stroke-width="2"/>
+    <text x="742" y="738" fill="#c9ccd1">On-chain anchor</text>
+  </g>
+</svg>

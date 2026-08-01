@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <!-- Background -->
+  <rect width="960" height="640" fill="#2b2f36"/>
+
+  <!-- Title -->
+  <text x="480" y="40" fill="#f4f6f8" font-size="24" font-weight="700" text-anchor="middle">Commit / Reveal Ordering</text>
+  <text x="480" y="66" fill="#9aa4b1" font-size="14" text-anchor="middle">Commitments indexed by H(w); only the earliest valid one is trusted</text>
+
+  <!-- ================= PHASE 1: COMMIT (blockchain timeline) ================= -->
+  <text x="60" y="118" fill="#f4f6f8" font-size="18" font-weight="600">1. Commit phase; commitments shown over time on-chain</text>
+
+  <!-- Timeline arrow -->
+  <line x1="70" y1="250" x2="900" y2="250" stroke="#5c6470" stroke-width="2"/>
+  <polygon points="900,250 888,244 888,256" fill="#5c6470"/>
+  <text x="895" y="278" fill="#7f8895" font-size="12" text-anchor="end">block height</text>
+
+  <!-- Commitment box helper style via individual rects -->
+  <!-- Attacker BEFORE (wrong w) -->
+  <g>
+    <rect x="80" y="150" width="180" height="86" rx="8" fill="#3a2b30" stroke="#e06c6c" stroke-width="1.5"/>
+    <line x1="170" y1="236" x2="170" y2="250" stroke="#e06c6c" stroke-width="2"/>
+    <circle cx="170" cy="250" r="5" fill="#e06c6c"/>
+    <text x="170" y="172" fill="#e06c6c" font-size="12" font-weight="700" text-anchor="middle">ATTACKER (before)</text>
+    <text x="170" y="196" fill="#f4f6f8" font-size="13" text-anchor="middle" font-family="Consolas, monospace">( H(w'), H(w', m'), m' )</text>
+    <text x="170" y="230" fill="#e0a06c" font-size="11" text-anchor="middle">w' &#8800; w</text>
+  </g>
+
+  <!-- USER (authentic) -->
+  <g>
+    <rect x="300" y="150" width="200" height="86" rx="8" fill="#2b3a30" stroke="#5fd08a" stroke-width="2.5"/>
+    <line x1="400" y1="240" x2="400" y2="250" stroke="#5fd08a" stroke-width="3"/>
+    <circle cx="400" cy="250" r="6" fill="#5fd08a"/>
+    <text x="400" y="172" fill="#5fd08a" font-size="12" font-weight="700" text-anchor="middle">USER (authentic)</text>
+    <text x="400" y="196" fill="#ffffff" font-size="14" text-anchor="middle" font-family="Consolas, monospace">( H(w), H(w, m), m )</text>
+    <text x="400" y="230" fill="#5fd08a" font-size="11" text-anchor="middle">earliest valid</text>
+  </g>
+
+  <!-- Attacker AFTER -->
+  <g>
+    <rect x="560" y="150" width="200" height="86" rx="8" fill="#3a2b30" stroke="#e06c6c" stroke-width="1.5"/>
+    <line x1="660" y1="236" x2="660" y2="250" stroke="#e06c6c" stroke-width="2"/>
+    <circle cx="660" cy="250" r="5" fill="#e06c6c"/>
+    <text x="660" y="172" fill="#e06c6c" font-size="12" font-weight="700" text-anchor="middle">ATTACKER (after)</text>
+    <text x="660" y="196" fill="#f4f6f8" font-size="13" text-anchor="middle" font-family="Consolas, monospace">( H(w), H(w, m'), m' )</text>
+    <text x="660" y="230" fill="#e0a06c" font-size="11" text-anchor="middle">posted after w is revealed</text>
+  </g>
+
+  <text x="80" y="280" fill="#f4f6f8" font-size="12">Key assumption: the authentic user is the first to know w.</text>
+
+  <!-- ================= PHASE 2: REVEAL ================= -->
+  <text x="60" y="340" fill="#f4f6f8" font-size="18" font-weight="600">2. Reveal phase: user publishes w</text>
+
+  <rect x="400" y="356" width="100" height="46" rx="8" fill="#33405a" stroke="#6c9ee0" stroke-width="2"/>
+  <text x="450" y="384" fill="#a9c8ff" font-size="16" font-weight="700" text-anchor="middle" font-family="Consolas, monospace">w</text>
+
+  <!-- ================= PHASE 3: VERIFY ================= -->
+  <text x="60" y="452" fill="#f4f6f8" font-size="18" font-weight="600">3. Node verification: open every commitment indexed by H(w)</text>
+
+  <!-- Check rows -->
+  <!-- Row: attacker before -->
+  <g font-size="13">
+    <rect x="80" y="470" width="800" height="40" rx="6" fill="#33383f" stroke="#454b54"/>
+    <text x="96" y="495" fill="#e06c6c" font-family="Consolas, monospace">( H(w'), H(w', m'), m' )</text>
+    <text x="300" y="495" fill="#c7ced7">wrong index; not returned by lookup on H(w)</text>
+    <text x="864" y="495" fill="#e06c6c" text-anchor="end" font-weight="700">&#10007; ignored</text>
+  </g>
+
+  <!-- Row: user -->
+  <g font-size="13">
+    <rect x="80" y="518" width="800" height="40" rx="6" fill="#2b3a30" stroke="#5fd08a" stroke-width="2"/>
+    <text x="96" y="543" fill="#5fd08a" font-family="Consolas, monospace">( H(w), H(w, m), m )</text>
+    <text x="300" y="543" fill="#eafff0" font-family="Consolas, monospace">earliest valid commitment</text>
+    <text x="864" y="543" fill="#5fd08a" text-anchor="end" font-weight="700">&#10003; trusted</text>
+  </g>
+
+  <!-- Row: attacker after -->
+  <g font-size="13">
+    <rect x="80" y="566" width="800" height="40" rx="6" fill="#33383f" stroke="#454b54"/>
+    <text x="96" y="591" fill="#e0a06c" font-family="Consolas, monospace">( H(w), H(w, m'), m' )</text>
+    <text x="300" y="591" fill="#c7ced7" font-family="Consolas, monospace">not earliest valid commitment</text>
+    <text x="864" y="591" fill="#e06c6c" text-anchor="end" font-weight="700">&#10007; discarded</text>
+  </g>
+
+  <!-- Legend -->
+  <g font-size="12">
+    <rect x="80" y="616" width="14" height="14" rx="3" fill="#2b3a30" stroke="#5fd08a"/>
+    <text x="102" y="628" fill="#9aa4b1">valid / trusted</text>
+    <rect x="230" y="616" width="14" height="14" rx="3" fill="#3a2b30" stroke="#e06c6c"/>
+    <text x="252" y="628" fill="#9aa4b1">attacker / discarded</text>
+  </g>
+</svg>
