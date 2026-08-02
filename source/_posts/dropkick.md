@@ -118,11 +118,11 @@ Security derives from the fact that, assuming the blockchain is append-only, the
 
 <img style="border-radius: 10px;" src="/images/dropkick/fawkescoin.svg">
 
-There are many additional subtleties to address, but this is the core idea of commit/reveal protocols, and they work not just to prove knowledge of hash preimages, but also to prove knowledge of solutions for any arbitrary [NP-complete problem](https://en.wikipedia.org/wiki/List_of_NP-complete_problems) in general (i.e. any problem for which solution-checking is fast).
+There are many additional subtleties to address, but this is the core idea of commit/reveal protocols, and they work not just to prove knowledge of hash preimages, but also to prove knowledge of solutions for any arbitrary [NP problem](https://en.wikipedia.org/wiki/List_of_NP-complete_problems) in general (i.e. any problem for which solution-checking is fast).
 
 For example, to prove knowledge of a Sudoku solution $x$, I can simply modify the public key $y$ to be a Sudoku puzzle with solution $x$. The verifier checks $x$ is a valid solution to $y$ once $x$ is revealed.
 
-Most PQ knowledge asymmetries are also NP-complete problems, so this generality means commit/reveal protocols can be applied as proof systems for proving _any KA_ in a Bitcoin PQ rescue protocol, without any heavy cryptography like SNARKs. Commit/reveal proofs are _much_ smaller than SNARKs, and are orders of magnitude faster to verify. They do have a few drawbacks which I'll discuss in the next sections, but most can be mitigated.
+Most PQ knowledge asymmetries are also NP problems, so this generality means commit/reveal protocols can be applied as proof systems for proving _any KA_ in a Bitcoin PQ rescue protocol, without any heavy cryptography like SNARKs. Commit/reveal proofs are _much_ smaller than SNARKs, and are orders of magnitude faster to verify. They do have a few drawbacks which I'll discuss in the next sections, but most can be mitigated.
 
 Commit/reveal protocols have been discussed numerous times on the mailing list and in the cryptographic literature (see [References](#References)).
 
