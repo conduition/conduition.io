@@ -198,7 +198,7 @@ How do we pay the fees needed to include our commitment $H(w, m)$ in a block if 
 
 The problem then becomes about incentives: The PQ rescuers would need to act charitably, or be incentivized through off-chain payment (credit cards, altcoins, etc).
 
-**Salvage Fees.** A more interesting option is an on-chain "salvage fee" - a share of the UTXO being rescued. If we modify the commitment protocol slightly so that instead of posting $H(w, m)$ on-chain, we post $H(H(w), m)$, then the salvager can open the inner hash and read the message $m$ to be signed without exposing the secret witness $w$. The salvager can thereby verify that the message $m$ enforces that some share of the rescued coins be paid to him as a salvage fee before publishing $H(H(w), m)$. The salvage fee option is intriguing as it provides a means to incentivize rescue by PQ UTXO holders. This idea seems unexplored in past discussions.
+**Salvage Fees.** A more interesting option is an on-chain "salvage fee" - a share of the UTXO being rescued. If we modify the commitment protocol slightly so that instead of posting $H(w, m)$ on-chain, we wrap it with another hash $H(H(w, m), m)$, then the salvager can open the outer hash and read the message $m$ to be signed without exposing the secret witness $w$, and without the ability to create new valid commitments himself. Because the message $m$ must match in both inner and outer hashes, the salvager can verify that $m$ enforces that some share of the rescued coins be paid to him as a salvage fee before publishing $H(H(w, m), m)$. The salvage fee option is intriguing as it provides a means to incentivize rescue by PQ UTXO holders. This idea seems unexplored in past discussions.
 
 **Merkle Trees.** As pointed out in the [FawkesCoin paper][fawkescoin] (Section 5.5), we could also change how commitments appear on-chain. Instead of appearing in-the-clear (e.g one `OP_RETURN` per commitment), each commitment $H(w, m)$ in the mempool could be combined into a merkle tree by a single untrusted party, who we'll call an _aggregator_. The root of that merkle tree can be published on-chain by anyone who has PQ UTXOs at a constant cost, and we call this party the _publisher_.
 
@@ -330,9 +330,9 @@ DropKick proving works as follows:
     - Practically, witnesses could be merged and reconstructed later, e.g. for BIP32 xprivs deriving related addresses.
 2. Generate a post-quantum signing key $Q$.
     - We could also allow $Q$ to be a multisignature group key, which would enable aggregators to cosign and enforce salvage fees on reveal transactions.
-3. Post a time-anchored commitment $H(H(w), Q)$ in a block, e.g. on an `OP_RETURN`, within a script pubkey, or in a merkle tree commingling with other such commitments published in the same way.
-4. Compute an opening proof $\pi$ which can be used to verify the historical provenance of the commitment $H(H(w), Q)$.
-5. Once the commitment $H(H(w), Q)$ has been mined for $d$ blocks, construct a transaction $T$ spending $u = \\{u_1, u_2, ... u_n\\}$ to arbitrary outputs.
+3. Post a time-anchored commitment $H(H(w, Q), Q)$ in a block, e.g. on an `OP_RETURN`, within a script pubkey, or in a merkle tree commingling with other such commitments published in the same way.
+4. Compute an opening proof $\pi$ which can be used to verify the historical provenance of the commitment $H(H(w, Q), Q)$.
+5. Once the commitment $H(H(w, Q), Q)$ has been mined for $d$ blocks, construct a transaction $T$ spending $u = \\{u_1, u_2, ... u_n\\}$ to arbitrary outputs.
     - $T$ should pay at least some fraction $\delta$ of the value of the rescued UTXOs as a fee to miners, to prevent censorship attacks (see [the Parameters section](#Parameters)).
 6. Sign $T$ with $Q$, producing a post-quantum signature $\mathbf{sig}$.
 7. Produce a set of legacy TX input witnesses $W$ to satisfy legacy consensus validation rules (e.g. EC signatures).
@@ -344,7 +344,7 @@ DropKick proving works as follows:
 A verifier, presented with a reveal transaction $T' = (T, w, Q, \mathsf{sig}, W, \pi)$, must:
 
 1. Validate all legacy consensus rules against $T$ and the legacy witnesses $W$ (soft-fork compatibility).
-1. Authenticate the commitment opening $\pi$, asserting $H(H(w), Q)$ was committed _at least_ $d$ blocks earlier.
+1. Authenticate the commitment opening $\pi$, asserting $H(H(w, Q), Q)$ was committed _at least_ $d$ blocks earlier.
 1. Verify $\mathsf{sig}$ is a valid signature on $T$ under $Q$.
 1. Decompose $w = \\{w_1, w_2, ... w_n\\}$.
 1. For each $i \in \\{1 ... n\\}$, verify that UTXO $u_i$ has script pubkey $s_i = f(w_i)$.
@@ -356,7 +356,7 @@ If all the above steps succeed, then the verifier knows that:
 - The spender authorized the use of a PQ signing key $Q$.
 - The key $Q$ authorized the transaction $T$.
 
-This completes authentication of the spending TX $T$, predicated on the assumption that upon $w$ being initially revealed, the spender would be the only agent in possession of a valid commitment to $H(H(w), Q)$ of age at least $d$.
+This completes authentication of the spending TX $T$, predicated on the assumption that upon $w$ being initially revealed, the spender would be the only agent in possession of a valid commitment to $H(H(w, Q), Q)$ of age at least $d$.
 
 
 ## Benefits
@@ -388,7 +388,7 @@ DropKick doesn't:
 - ⚠️ Requires users wait a long time ($d$ blocks) between the _commit_ and _reveal_ steps.
 - ⚠️ Miners can theoretically steal coins if they can persistently censor a reveal transaction for $d$ blocks.
   - This should be extremely unlikely in practice, as a significant majority of hashpower would need to collude for a period of at least $d$ blocks. See [the Appendix](#Appendix-Game-Theory) for more info.
-- ⚠️ The opening proof $\pi$ could be decently large, as it would need to embed the entire transaction that contains the commitment to $H(H(w), Q)$.
+- ⚠️ The opening proof $\pi$ could be decently large, as it would need to embed the entire transaction that contains the commitment to $H(H(w, Q), Q)$.
   - This could be mitigated by using a standard transaction format template, which is prefilled by the verifier. This restricts the shape of commitment transactions, but makes proofs much smaller because the prover need not provide the entire commitment transaction.
 - ⚠️ The reveal transaction requires at least one PQ signature, which (depending on the scheme) may be quite large.
 - ⚠️ Aggregators could be flooded with spam commitments, which would inflate the size of opening proofs $\pi$ for all users of that aggregator.
@@ -399,7 +399,7 @@ DropKick doesn't:
 
 ## Usage
 
-**DropKick users** benefit from a very simple rescue UX: Come online once, generate a PQ key $Q$, and _drop_ a commitment $H(H(w), Q)$ on-chain, probably by querying an aggregator server off-chain. The user stores the opening proof $\pi$ on-disk, and the user can then go offline, free to return days/weeks/months later after, provided she waits at least $d$ blocks.
+**DropKick users** benefit from a very simple rescue UX: Come online once, generate a PQ key $Q$, and _drop_ a commitment $H(H(w, Q), Q)$ on-chain, probably by querying an aggregator server off-chain. The user stores the opening proof $\pi$ on-disk, and the user can then go offline, free to return days/weeks/months later after, provided she waits at least $d$ blocks.
 
 The user can, at any time after $d$ blocks, _kick_ the target coins away with a reveal transaction, paying to any arbitrary destination chosen at spending time, and authorized by a signature under $Q$. If the user loses the proof $\pi$, she can just make a new one - the old opening proof is hidden in some ancient merkle tree, lost to time, but not polluting the blockchain or the UTXO set at all.
 
@@ -409,7 +409,7 @@ Essentially, adding the commitment is a sort of "delayed import" of her legacy c
 > - Enter your legacy seed phrase
 > - Now wait 1000 blocks and your funds will be available 😇
 
-**Aggregation server operators** can construct the PQ pubkey $Q$ jointly in tandem with the user, as a multisignature key (e.g. through concatenation, MPC, or interactive multisignature protocols). This allows the aggregation server to enforce constraints on the reveal transaction $T$, such as enforcing the payment of salvage fees. Given $H(w)$ (which is safe for the user to share) and the joint PQ key $Q$, the aggregator can construct the commitment and opening proof of $H(H(w), Q)$, and either forward the commitment to a publisher or publish it himself, while the opening proof is given to the user, who verifies its inclusion when mined.
+**Aggregation server operators** can construct the PQ pubkey $Q$ jointly in tandem with the user, as a multisignature key (e.g. through concatenation, MPC, or interactive multisignature protocols). This allows the aggregation server to enforce constraints on the reveal transaction $T$, such as enforcing the payment of salvage fees. Given $H(w, Q)$ (which is safe for the user to share) and the joint PQ key $Q$, the aggregator can construct the commitment and opening proof of $H(H(w, Q), Q)$, and either forward the commitment to a publisher or publish it himself, while the opening proof is given to the user, who verifies its inclusion when mined.
 
 **Legacy validator nodes** will ignore unknown transaction fields, and validate spends using legacy consensus rules, which are all satisfied by the legacy witnesses in $W$.
 

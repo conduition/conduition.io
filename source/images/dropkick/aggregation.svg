@@ -68,19 +68,19 @@
     <!-- leaf 0 -->
     <rect x="45"  y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
     <text x="130" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L0</text>
-    <text x="130" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₀), m₀ )</text>
+    <text x="130" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₀, m₀), m₀ )</text>
     <!-- leaf 1 -->
     <rect x="285" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
     <text x="370" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L1</text>
-    <text x="370" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₁), m₁ )</text>
+    <text x="370" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₁, m₁), m₁ )</text>
     <!-- leaf 2 -->
     <rect x="525" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
     <text x="610" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L2</text>
-    <text x="610" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₂), m₂ )</text>
+    <text x="610" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₂, m₂), m₂ )</text>
     <!-- leaf 3 -->
     <rect x="765" y="456" width="170" height="62" rx="8" fill="#333044" stroke="#c58af9" stroke-width="2"/>
     <text x="850" y="478" text-anchor="middle" fill="#c58af9" font-size="12" font-weight="bold">Leaf L3</text>
-    <text x="850" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₃), m₃ )</text>
+    <text x="850" y="502" text-anchor="middle" fill="#e8e8e8" font-size="12">H( H(w₃, m₃), m₃ )</text>
   </g>
 
   <!-- ===================== user inputs ===================== -->
