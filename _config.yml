@@ -225,7 +225,7 @@ deploy:
   type: rsync
   host: conduition.io
   user: root
-  root: /var/www
+  root: /var/www/blog
   port: 22
   delete: true
   progress: true
