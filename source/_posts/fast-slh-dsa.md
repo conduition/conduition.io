@@ -307,7 +307,7 @@ Here is an additional benchmark from one my colleague's PC, which has an [AMD Ry
 
 We can see the resulting speedup is about a factor 2.5x across the board.
 
-While highly effective, this optimization depends on a specific set of CPU instructions which are not universally available. Any code implementing SHA2 hardware acceleration is highly platform-specific by nature. And as you'll see later, for the specific case of SLH-DSA, SHA2 hardware acceleration is actually _less_ effective than other more general and ubiquitous x86 CPU instruction sets like [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), and unfortunately you cannot combine them (as far as I can tell).
+While highly effective, this optimization depends on a specific set of CPU instructions which are not universally available. Any code implementing SHA2 hardware acceleration is highly platform-specific by nature. And as you'll see later, for the specific case of SLH-DSA signing and keygen, SHA2 hardware acceleration is actually _less_ effective than other more general and ubiquitous x86 CPU instruction sets like [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), and unfortunately you cannot combine them (as far as I can tell).
 
 ### Comparison to RustCrypto and Official
 
@@ -321,7 +321,7 @@ Here is how RustCrypto's SLH-DSA implementation performs with and without hardwa
 | Signing | 495 ms | 178 ms |
 | Verification | 0.495 ms | 0.181 ms |
 
-The SPHINCS+ team has not implemented SHA2 hardware acceleration in their reference code, but this is because they instead wrote a vectorized implementation of SLH-DSA using x86 AVX2 instructions, which runs faster and works on more machines. More on that soon.
+The SPHINCS+ team has not implemented SHA2 hardware acceleration in their reference code, but this is because they instead wrote a vectorized implementation of SLH-DSA using x86 AVX2 instructions, which works on more machines. More on that soon.
 
 ### SHA3 Acceleration
 
@@ -407,6 +407,8 @@ Here is how the SPHINCS+ team's AVX2 code compares against their unvectorized "c
 
 As you can see, my AVX2 signing and keygen code is marginally faster (around 15%), but since I did not implement vectorized verification, my verify algorithm is much slower.
 
+**Very interesting fact:** My earlier verification benchmark using SHA-NI hardware acceleration actually beats the official SPHINCS+ team's AVX2 verification benchmark: 0.089 ms per operation (SHA-NI) vs 0.138 ms per operation (Official+AVX2).
+
 ## Multithreading
 
 SLH-DSA presents many opportunities for optimization through [parallelization](https://www.geeksforgeeks.org/operating-systems/difference-between-concurrency-and-parallelism/). As we've seen already, the Winternitz chains used for certification signatures consume the bulk of SLH-DSA's runtime, and fortunately each Winternitz hash chain is completely independent of each other and can be computed in parallel.
@@ -439,6 +441,8 @@ The down side is that this approach is limited to a certain maximum level of con
 ### Comparison to RustCrypto and Official
 
 Neither RustCrypto nor the SPHINCS+ team implemented multithreading inside their code. Though one could use their libraries with multiple threads to produce distinct signatures or verify signatures in parallel, there is no way to use a CPU's spare available cores to speed up the latency of singular operations within these libraries.
+
+It is worth noting [Scott Fluhrer's `parallel-sphincsplus` implementation](https://github.com/sphincs/parallel-sphincsplus), which offers multithreaded signing and key-generation, as well as AVX-512 support.
 
 # Massive Parallelism
 
