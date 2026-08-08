@@ -6,6 +6,10 @@ category: code
 description: API documentation for my automatic DLC oracle REST API.
 ---
 
+## Update 2024-08-08
+
+I've taken Cassandra offline completely now, as regrettably Coinmarketcap (the oracle's primary data source) has turned off open access to their API, and I lack the time and incentive to pursue integration with an alternative data source.
+
 # Cassandra
 
 Cassandra is an unattended [Discreet Log Contract (DLC)](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Introduction.md) oracle webserver written in Go and Rust. Her attestations are fully compliant with [the DLC specifications](https://github.com/discreetlogcontracts/dlcspecs), and so should be interoperable with any wallet or service which consumes the same class of announcements and attestations.
