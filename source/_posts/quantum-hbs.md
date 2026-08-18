@@ -1,7 +1,6 @@
 ---
 title: Hash-Based Signature Schemes for Post-Quantum Bitcoin
 date: 2024-10-21
-mathjax: true
 category: cryptography
 description: All safe roads once were wild.
 ---

@@ -1,7 +1,6 @@
 ---
 title: Making SLH-DSA 10x-100x Faster
 date: 2025-11-23
-mathjax: true
 category: code
 description: Performance research and benchmarks of optimizations to SLH-DSA (SPHINCS+)
 ---

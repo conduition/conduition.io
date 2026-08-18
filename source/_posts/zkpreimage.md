@@ -1,7 +1,6 @@
 ---
 title: Verifiably Buy Solutions to NP Problems with Bitcoin
 date: 2024-11-02
-mathjax: true
 category: bitcoin
 description: Using zero-knowledge proofs to convert a standard HTLC into the purchase of a secret with arbitrary properties.
 ---

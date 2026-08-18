@@ -1,7 +1,6 @@
 ---
 title: Resharing Shamir Secret Shares to Change the Threshold
 date: 2023-09-06
-mathjax: true
 category: cryptography
 description: Change the structure of a Shamir Secret Sharing group using some fancy multi-party computation tricks.
 ---

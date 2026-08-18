@@ -1,7 +1,6 @@
 ---
 title: Issuing New Shamir Secret Shares Using Multi-Party Computation
 date: 2023-09-04
-mathjax: true
 category: cryptography
 description: Safely add new members to a Shamir Secret Sharing group.
 ---

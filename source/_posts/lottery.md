@@ -1,7 +1,6 @@
 ---
 title: A Provably Fair Off-Chain Lottery
 date: 2023-11-19
-mathjax: true
 category: scriptless
 description: How to gamble Bitcoin fairly and transparently.
 ---

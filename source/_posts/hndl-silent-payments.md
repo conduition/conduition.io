@@ -1,7 +1,6 @@
 ---
 title: Silent Payments Harvest-Now-Decrypt-Later Attack
 date: 2026-07-02
-mathjax: true
 category: cryptography
 description: They won't stay silent forever.
 ---

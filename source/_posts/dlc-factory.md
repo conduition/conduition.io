@@ -1,7 +1,6 @@
 ---
 title: Discreet Log Contract Factories
 date: 2025-01-11
-mathjax: true
 category: scriptless
 description: Bitcoin smart contracts which can be extended infinitely and interrupted at any time.
 ---

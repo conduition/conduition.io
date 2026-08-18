@@ -1,7 +1,6 @@
 ---
 title: Announcing the MuSig2 Rust Crate
 date: 2023-10-31
-mathjax: true
 category: code
 description: I got bored and wanted a more flexible MuSig library.
 ---

@@ -1,7 +1,6 @@
 ---
 title: Off-Chain Ticketing for Discreet Log Contracts
 date: 2024-01-04
-mathjax: true
 category: scriptless
 description: How to participate in a Bitcoin DLC without any on-chain transactions.
 ---

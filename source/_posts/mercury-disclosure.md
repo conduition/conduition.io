@@ -1,7 +1,6 @@
 ---
 title: Mercury Layer Vulnerability Disclosures Report
 date: 2024-09-06
-mathjax: true
 category: code
 description: An examination of validation vulnerabilities in the Mercury Layer client libraries.
 ---

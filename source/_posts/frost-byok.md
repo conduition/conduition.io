@@ -1,7 +1,6 @@
 ---
 title: How to Bring Your Own Key to a FROST Signing Group
 date: 2024-02-14
-mathjax: true
 category: cryptography
 description: FROST normally requires participants to generate random keys at setup time, but it turns out some participants can actually bring their own keys to the group.
 ---

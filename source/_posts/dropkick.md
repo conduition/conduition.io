@@ -1,7 +1,6 @@
 ---
 title: DropKick ⚽️ - A Minimal Commit/Reveal Rescue Protocol
 date: 2026-08-01
-mathjax: true
 category: bitcoin
 description: Rescue quantum procrastinators by letting them prove their chronological superiority to a quantum attacker.
 ---

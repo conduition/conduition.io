@@ -1,7 +1,6 @@
 ---
 title: Pruning Hypertrees for the Lax and Lazy
 date: 2026-04-20
-mathjax: true
 category: cryptography
 description: How to generate and sign with SLH-DSA very quickly, with only mild side effects.
 ---
