@@ -1,6 +1,7 @@
 ---
 title: I'm Honest, I Swear! - Credible Threats of Private Key Exposure
 date: 2023-09-08
+mathjax: true
 category: scriptless
 description: How to make secret keys worth keeping secret.
 ---

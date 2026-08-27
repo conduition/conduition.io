@@ -1,6 +1,7 @@
 ---
 title: Vulnerabilities in the Cashu ECash Protocol
 date: 2026-01-10
+mathjax: true
 category: code
 description: I found some vulnerabilities in Cashu's protocol for deterministic wallet recovery.
 ---

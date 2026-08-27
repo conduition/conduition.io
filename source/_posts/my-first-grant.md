@@ -1,6 +1,7 @@
 ---
 title: Brink is Now Funding My Research
 date: 2026-06-03
+mathjax: true
 category: bitcoin
 description: I can afford breakfast now!
 ---

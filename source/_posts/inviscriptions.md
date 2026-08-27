@@ -1,6 +1,7 @@
 ---
 title: Inviscriptions - Undetectable Bitcoin Inscriptions
 date: 2023-12-13
+mathjax: true
 category: bitcoin
 description: Why filtering spam Bitcoin transactions is doomed to fail.
 ---

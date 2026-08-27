@@ -1,6 +1,7 @@
 ---
 title: Bitcoin Devs Should Be Learning Isogeny Cryptography
 date: 2026-03-12
+mathjax: true
 category: cryptography
 description: How isogenies can solve Bitcoin's Quantum problems
 ---

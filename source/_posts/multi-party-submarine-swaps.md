@@ -1,6 +1,7 @@
 ---
 title: Multi-Party Submarine Swaps
 date: 2024-07-12
+mathjax: true
 category: scriptless
 description: Scaling submarine swaps into a cooperative multi-party protocol for better efficiency.
 ---

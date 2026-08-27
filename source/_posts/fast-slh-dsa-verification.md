@@ -1,6 +1,7 @@
 ---
 title: SLH-DSA vs Schnorr Verification
 date: 2026-01-25
+mathjax: true
 category: code
 description: Detailed comparison of SLH-DSA and BIP340 Schnorr verification algorithms.
 ---

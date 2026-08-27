@@ -1,6 +1,7 @@
 ---
 title: The Riddles of Adaptor Signatures
 date: 2023-09-08
+mathjax: true
 category: scriptless
 description: A detailed description of the math behind Schnorr Adaptor Signatures.
 ---

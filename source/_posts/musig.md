@@ -1,6 +1,7 @@
 ---
 title: MuSig1 - A Reasonably Secure Multisig Scheme
 date: 2023-06-29
+mathjax: true
 category: cryptography
 description: How to cooperatively aggregate your Bitcoin signatures for fun and profit.
 ---
