@@ -860,7 +860,7 @@ Although MSS schemes give us our first tantalizing glimpse at truly scalable has
 
 However, the _principle_ of MSS is incredibly flexible, which is why so many modern hash-based signature protocols are based on the core ideas of MSS, including the next one.
 
-## SPINCS+
+## SPHINCS+
 
 [SPHINCS+](https://sphincs.org/data/sphincs+-paper.pdf) is a state-of-the-art hash-based signature system which leverages concepts from the previous signature schemes I've described earlier. SPHINCS+ is currently the only hash-based signature (HBS) protocol to have been finalized by NIST as an [approved post-quantum digital signature standard](https://doi.org/10.6028/NIST.FIPS.205). In NIST's terminology, SPHINCS is referred to as "SLH-DSA", or "StateLess Hash-based Digital Signature Algorithm". You see, SPHINCS is also special because unlike most many-time signature (MTS) schemes which use hashes, SPHINCS _does not require signers to keep state._
 
